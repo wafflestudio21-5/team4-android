@@ -16,7 +16,7 @@ fun EmailSentPage (onEnter: (String) -> Unit){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("email sent")
-        MenuButton(text = "비밀번호 reset"){
+        MenuButton(text = "로그인 화면으로"){
             onEnter(NavigationDestination.Login)
         }
     }
