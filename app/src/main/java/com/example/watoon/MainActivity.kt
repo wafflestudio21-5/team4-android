@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.watoon.ui.theme.WatoonTheme
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,12 +61,3 @@ private fun SetNavigation() {
         }
     }
 }
-
-
-/*@Preview(showBackground = true, widthDp = 320)
-@Composable
-fun DefaultPreview() {
-    WatoonTheme {
-        LoginPage(modifier = Modifier.fillMaxSize())
-    }
-}*/
