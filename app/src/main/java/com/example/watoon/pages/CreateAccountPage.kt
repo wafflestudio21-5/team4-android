@@ -1,4 +1,4 @@
-package com.example.watoon
+package com.example.watoon.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.watoon.NavigationDestination
 
 @Composable
 fun CreateAccountPage (onEnter: (String) -> Unit){
