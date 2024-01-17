@@ -5,4 +5,5 @@ object NavigationDestination {
     const val CreateAccount = "CreateAccount"
     const val Main = "Main"
     const val EmailSent = "EmailSent"
+    const val Search = "Search"
 }

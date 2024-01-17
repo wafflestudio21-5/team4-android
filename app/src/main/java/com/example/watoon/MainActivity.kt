@@ -11,6 +11,8 @@ import com.example.watoon.pages.CreateAccountPage
 import com.example.watoon.pages.EmailSentPage
 import com.example.watoon.pages.LoginPage
 import com.example.watoon.pages.MainPage
+import com.example.watoon.pages.MainPageBasic
+import com.example.watoon.pages.SearchPage
 import com.example.watoon.ui.theme.WatoonTheme
 
 
@@ -35,6 +37,7 @@ private fun SetNavigation() {
         }
         composable(NavigationDestination.Main) {
             MainPage(listOf(1, 2, 3, 4, 5))
+            MainPageBasic(onEnter = { navController.navigate(it) })
         }
         composable(NavigationDestination.CreateAccount) {
             CreateAccountPage(onEnter = { navController.navigate(it) })
@@ -42,5 +45,10 @@ private fun SetNavigation() {
         composable(NavigationDestination.EmailSent){
             EmailSentPage(onEnter = { navController.navigate(it) })
         }
+        composable(NavigationDestination.Search){
+            SearchPage(onEnter = {navController.navigate(it)})
+        }
     }
 }
+
+

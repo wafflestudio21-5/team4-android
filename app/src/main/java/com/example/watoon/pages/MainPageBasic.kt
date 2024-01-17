@@ -31,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.watoon.NavigationDestination
 
 import com.example.watoon.ui.theme.WatoonTheme
 
@@ -38,7 +39,7 @@ import com.example.watoon.ui.theme.WatoonTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainPageBasic() {
+fun MainPageBasic(onEnter: (String) -> Unit,) {
     var showMainPage by rememberSaveable { mutableStateOf(true) }
 
     Scaffold(
@@ -52,6 +53,7 @@ fun MainPageBasic() {
                 actions = {
                     IconButton(
                         onClick = {
+                            onEnter(NavigationDestination.Search)
                         }
                     ) {
                         Icon(imageVector = Icons.Default.Search, contentDescription = null)
@@ -127,6 +129,6 @@ fun MainPageBasic() {
 @Composable
 fun MainPageBasicPreview() {
     WatoonTheme {
-        MainPageBasic()
+        //MainPageBasic()
     }
 }
