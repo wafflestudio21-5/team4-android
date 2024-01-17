@@ -13,6 +13,7 @@ import com.example.watoon.pages.LoginPage
 import com.example.watoon.pages.MainPage
 import com.example.watoon.pages.MainPageBasic
 import com.example.watoon.pages.SearchPage
+import com.example.watoon.pages.WebtoonUploadPage
 import com.example.watoon.ui.theme.WatoonTheme
 
 
@@ -36,7 +37,6 @@ private fun SetNavigation() {
             LoginPage(onEnter = { navController.navigate(it) })
         }
         composable(NavigationDestination.Main) {
-            MainPage(listOf(1, 2, 3, 4, 5))
             MainPageBasic(onEnter = { navController.navigate(it) })
         }
         composable(NavigationDestination.CreateAccount) {
@@ -47,6 +47,9 @@ private fun SetNavigation() {
         }
         composable(NavigationDestination.Search){
             SearchPage(onEnter = {navController.navigate(it)})
+        }
+        composable(NavigationDestination.WebtoonUpload){
+            WebtoonUploadPage(onEnter = {navController.navigate(it)})
         }
     }
 }

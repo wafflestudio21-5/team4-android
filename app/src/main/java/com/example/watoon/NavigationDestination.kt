@@ -6,4 +6,5 @@ object NavigationDestination {
     const val Main = "Main"
     const val EmailSent = "EmailSent"
     const val Search = "Search"
+    const val WebtoonUpload = "WebtoonUpload"
 }

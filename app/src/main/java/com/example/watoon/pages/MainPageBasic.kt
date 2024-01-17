@@ -51,6 +51,9 @@ fun MainPageBasic(onEnter: (String) -> Unit,) {
                     Text(text = " ")
                 },
                 actions = {
+                    MenuButton(text = "웹툰 업로드"){
+                        onEnter(NavigationDestination.WebtoonUpload)
+                    }
                     IconButton(
                         onClick = {
                             onEnter(NavigationDestination.Search)
