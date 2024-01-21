@@ -13,6 +13,7 @@ import com.example.watoon.pages.LoginPage
 import com.example.watoon.pages.MainPage
 import com.example.watoon.pages.MainPageBasic
 import com.example.watoon.pages.SearchPage
+import com.example.watoon.pages.SignupCompletePage
 import com.example.watoon.pages.WebtoonUploadPage
 import com.example.watoon.ui.theme.WatoonTheme
 
@@ -44,6 +45,9 @@ private fun SetNavigation() {
         }
         composable(NavigationDestination.EmailSent){
             EmailSentPage(onEnter = { navController.navigate(it) })
+        }
+        composable(NavigationDestination.SignupComplete){
+            SignupCompletePage(onEnter = { navController.navigate(it) })
         }
         composable(NavigationDestination.Search){
             SearchPage(onEnter = {navController.navigate(it)})

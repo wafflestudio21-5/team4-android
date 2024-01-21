@@ -28,7 +28,6 @@ fun LoginPage (
 ){
     var userId by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    var isLoading by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -38,7 +37,7 @@ fun LoginPage (
         TextField(
             value = userId,
             onValueChange = { userId = it },
-            label = { Text("ID") },
+            label = { Text("아이디") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -47,7 +46,7 @@ fun LoginPage (
         TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text("비밀번호") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
@@ -63,7 +62,7 @@ fun LoginPage (
                 onEnter(NavigationDestination.CreateAccount)
             }
         }
-        MenuButton(text = "비밀번호 reset"){
+        MenuButton(text = "비밀번호 찾기"){
             onEnter(NavigationDestination.EmailSent)
         }
     }
