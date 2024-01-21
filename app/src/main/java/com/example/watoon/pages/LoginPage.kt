@@ -58,7 +58,6 @@ fun LoginPage (
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -96,7 +95,6 @@ fun LoginPage (
                 onEnter(NavigationDestination.EmailSent)
             }
         }
-
         if (isLoading) {
             Text("로딩 중입니다...")
         }
