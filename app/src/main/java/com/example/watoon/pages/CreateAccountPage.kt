@@ -1,24 +1,112 @@
 package com.example.watoon.pages
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
+import com.example.watoon.network.MyRestAPI
+import com.example.watoon.viewModel.LoginViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
+import javax.inject.Inject
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateAccountPage (onEnter: (String) -> Unit){
+fun CreateAccountPage(onEnter: (String) -> Unit){
+    val viewModel: LoginViewModel = hiltViewModel()
+
+    var email by rememberSaveable { mutableStateOf("") }
+    var pw1 by rememberSaveable { mutableStateOf("") }
+    var pw2 by rememberSaveable { mutableStateOf("") }
+    var nickname by rememberSaveable { mutableStateOf("") }
+
+    var isLoading by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("create account")
-        MenuButton(text = "비밀번호 reset"){
-            onEnter(NavigationDestination.EmailSent)
+        val context = LocalContext.current
+
+        TextField(
+            value = nickname,
+            onValueChange = { nickname = it },
+            label = { Text("닉네임") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+        TextField(
+            value = pw1,
+            onValueChange = { pw1 = it },
+            label = { Text("비밀번호") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+        TextField(
+            value = pw2,
+            onValueChange = { pw2 = it },
+            label = { Text("비밀번호 확인") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+        TextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("이메일 주소") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        MenuButton(text = "회원가입"){
+            isLoading = true
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    viewModel.createAccount(email, pw1, pw2, nickname)
+                    onEnter(NavigationDestination.SignupComplete)
+                } catch(e : HttpException){
+                    var message = ""
+                    val errorBody = JSONObject(e.response()?.errorBody()?.string())
+                    errorBody.keys().forEach { key ->
+                        message += ("$key - ${errorBody.getString(key).substring(2 until errorBody.getString(key).length - 2)}" + "\n")
+                    }
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                } finally {
+                    isLoading = false
+                }
+            }
+        }
+
+        if (isLoading) {
+            Text("로딩 중입니다...")
         }
     }
 }
