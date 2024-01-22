@@ -9,9 +9,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.watoon.pages.CreateAccountPage
 import com.example.watoon.pages.EmailSentPage
+import com.example.watoon.pages.EpisodeUploadPage
 import com.example.watoon.pages.LoginPage
-import com.example.watoon.pages.MainPage
 import com.example.watoon.pages.MainPageBasic
+import com.example.watoon.pages.NewWebtoonPage
 import com.example.watoon.pages.SearchPage
 import com.example.watoon.pages.SignupCompletePage
 import com.example.watoon.pages.WebtoonUploadPage
@@ -55,6 +56,12 @@ private fun SetNavigation() {
         }
         composable(NavigationDestination.WebtoonUpload){
             WebtoonUploadPage(onEnter = {navController.navigate(it)})
+        }
+        composable(NavigationDestination.EpisodeUpload){
+            EpisodeUploadPage(onEnter = {navController.navigate(it)})
+        }
+        composable(NavigationDestination.NewWebtoon){
+            NewWebtoonPage(onEnter = {navController.navigate(it)})
         }
     }
 }
