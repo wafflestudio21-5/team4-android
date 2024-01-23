@@ -1,6 +1,8 @@
 package com.example.watoon.pages
 
 import android.annotation.SuppressLint
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,20 +18,48 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.watoon.NavigationDestination
+import com.example.watoon.data.Webtoon
 import com.example.watoon.ui.theme.WatoonTheme
+import com.example.watoon.viewModel.WebtoonViewModel
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainPage(webtoonList:List<Int>) {
-    //서버에 연결하기 전에는 임의로 List 배정
+fun MainPage() {
+
+    val viewModel: WebtoonViewModel = hiltViewModel()
+    val scope = rememberCoroutineScope()
+
+    val webtoonList by viewModel.webtoonList.collectAsState()
+
+    val calendar = Calendar.getInstance()
+    val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+
+    val apiListNames = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "finished")
+    val appListNames = arrayOf("일", "월", "화", "수", "목", "금", "토", "완결")
+
+    val dayName = apiListNames[dayOfWeek - 1]
+
     val rowNum = 1 + (webtoonList.size-1)/3
+
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -43,13 +73,27 @@ fun MainPage(webtoonList:List<Int>) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
                     ){
-                        Text("월", color = Color.White)
-                        Text("화", color = Color.White)
-                        Text("수", color = Color.White)
-                        Text("목", color = Color.White)
-                        Text("금", color = Color.White)
-                        Text("토", color = Color.White)
-                        Text("일", color = Color.White)
+                        for(i in 0..7){
+                            Text(
+                                text= appListNames[i],
+                                color = Color.White,
+                                modifier = Modifier
+                                    .clickable {
+                                        scope.launch {
+                                            try {
+                                                viewModel.getWebtoonList(apiListNames[i])
+                                            } catch(e : HttpException){
+                                                var message = ""
+                                                val errorBody = JSONObject(e.response()?.errorBody()?.string())
+                                                errorBody.keys().forEach { key ->
+                                                    message += ("$key - ${errorBody.getString(key).substring(2 until errorBody.getString(key).length - 2)}" + "\n")
+                                                }
+                                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                            }
+                                        }
+                                    }
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Black)
@@ -57,7 +101,6 @@ fun MainPage(webtoonList:List<Int>) {
         }
         , containerColor = Color.Black
     ){
-
         LazyColumn(
             //padding 방법 추가 고려 필요
             modifier = Modifier
@@ -75,28 +118,26 @@ fun MainPage(webtoonList:List<Int>) {
 }
 
 @Composable
-fun RowOfWebtoon(rowList : List<Int>){
+fun RowOfWebtoon(rowList : List<Webtoon>){
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
     ){
-        for(i in rowList){
-            Webtoon(index = i)
+        for(i in 0..2){
+            if(i<rowList.size){
+                Webtoon(rowList[i])
+            }
+            else{
+                //Empty Webtoon
+            }
         }
     }
 }
 
 @Composable
-fun Webtoon(index : Int){
-    Text(text = index.toString(), color = Color.White)
-    //여기서 Webtoon 하나씩 표시 하면 될듯
-    //썸네일 + 제목 + 작가 + 별점
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainPagePreview() {
-    WatoonTheme {
-        MainPage(webtoonList = mutableListOf<Int>(1,2,3,4,5,6,7,8,9))
+fun Webtoon(webtoon: Webtoon) {
+    Row {
+        Text(text = webtoon.title)
     }
 }
+
