@@ -45,7 +45,7 @@ fun MainPage() {
 
     val calendar = Calendar.getInstance()
 
-    var listNum by remember { mutableIntStateOf(calendar.get(Calendar.DAY_OF_WEEK)) }
+    var listNum by remember { mutableIntStateOf(calendar.get(Calendar.DAY_OF_WEEK)-1) }
 
     val apiListNames = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "finished")
     val appListNames = arrayOf("일", "월", "화", "수", "목", "금", "토", "완결")
