@@ -57,7 +57,6 @@ fun MainPage(webtoonList:List<Int>) {
         }
         , containerColor = Color.Black
     ){
-
         LazyColumn(
             //padding 방법 추가 고려 필요
             modifier = Modifier
