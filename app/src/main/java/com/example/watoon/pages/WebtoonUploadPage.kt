@@ -1,7 +1,9 @@
 package com.example.watoon.pages
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
@@ -39,7 +42,7 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
 
     val myWebtoonList by viewModel.myWebtoonList.collectAsState()
 
-    Box(
+    Column(
         modifier = Modifier.fillMaxSize()
     ) {
         Row(
@@ -56,7 +59,7 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
                 Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
             }
             Text(
-                text = "업로드할 웹툰 고르기",
+                text = "업로드할 웹툰 선택",
                 modifier = Modifier.weight(1f)
             )
         }
@@ -77,7 +80,7 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 48.dp),
+                .padding(top = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             /*items(myWebtoonList) {webtoon ->
@@ -102,8 +105,8 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
 
 @Composable
 fun WebtoonItem(webtoon: Webtoon, onClick: () -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth().clickable { onClick() },){
-        Text(webtoon.title)
+    Row(modifier = Modifier.fillMaxWidth().clickable { onClick() }){
+        Text(webtoon.title, textAlign = TextAlign.Center)
     }
 }
 

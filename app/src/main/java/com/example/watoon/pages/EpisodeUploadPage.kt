@@ -89,6 +89,7 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
             Text("Selected File: ${getFileName(selectedFileUri!!)}")
         }
         MenuButton(text = "업로드") {
+            ///웹툰 추가 api 연결 필요
         }
     }
 }
