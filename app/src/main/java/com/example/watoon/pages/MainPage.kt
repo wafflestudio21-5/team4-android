@@ -8,31 +8,25 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.watoon.NavigationDestination
 import com.example.watoon.data.Webtoon
-import com.example.watoon.ui.theme.WatoonTheme
 import com.example.watoon.viewModel.WebtoonViewModel
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -50,12 +44,11 @@ fun MainPage() {
     val webtoonList by viewModel.webtoonList.collectAsState()
 
     val calendar = Calendar.getInstance()
-    val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+
+    var listNum by remember { mutableIntStateOf(calendar.get(Calendar.DAY_OF_WEEK)) }
 
     val apiListNames = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "finished")
     val appListNames = arrayOf("일", "월", "화", "수", "목", "금", "토", "완결")
-
-    val dayName = apiListNames[dayOfWeek - 1]
 
     val rowNum = 1 + (webtoonList.size-1)/3
 
@@ -76,9 +69,10 @@ fun MainPage() {
                         for(i in 0..7){
                             Text(
                                 text= appListNames[i],
-                                color = Color.White,
+                                color = if(i==listNum) Color.Green else Color.White,
                                 modifier = Modifier
                                     .clickable {
+                                        listNum = i
                                         scope.launch {
                                             try {
                                                 viewModel.getWebtoonList(apiListNames[i])
@@ -92,6 +86,7 @@ fun MainPage() {
                                             }
                                         }
                                     }
+
                             )
                         }
                     }
