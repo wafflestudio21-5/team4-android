@@ -11,8 +11,8 @@ import javax.inject.Inject
 class WebtoonViewModel @Inject constructor(private var api : MyRestAPI) : ViewModel(){
     val webtoonList:MutableStateFlow<List<Webtoon>> = MutableStateFlow(emptyList())
 
-    suspend fun getWebtoonList(type:String){
-        api.getWebtoonList(type).apply{
+    suspend fun getWebtoonList(type:String, cursor:String?){
+        api.getWebtoonList(type, cursor).apply{
             webtoonList.value = this.results
         }
     }

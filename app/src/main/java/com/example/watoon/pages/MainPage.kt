@@ -20,14 +20,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.watoon.WebtoonsViewModel
 import com.example.watoon.data.Webtoon
-import com.example.watoon.viewModel.WebtoonViewModel
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.HttpException
@@ -37,20 +39,18 @@ import java.util.Calendar
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainPage() {
+    val viewModel: WebtoonsViewModel = hiltViewModel()
+    val webtoonList = viewModel.webtoonList.collectAsLazyPagingItems()
 
-    val viewModel: WebtoonViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
 
-    val webtoonList by viewModel.webtoonList.collectAsState()
-
     val calendar = Calendar.getInstance()
-
     var listNum by remember { mutableIntStateOf(calendar.get(Calendar.DAY_OF_WEEK)-1) }
 
     val apiListNames = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "finished")
     val appListNames = arrayOf("일", "월", "화", "수", "목", "금", "토", "완결")
 
-    val rowNum = 1 + (webtoonList.size-1)/3
+    val rowNum = 1 + (webtoonList.itemCount-1)/3
 
     val context = LocalContext.current
 
@@ -75,7 +75,7 @@ fun MainPage() {
                                         listNum = i
                                         scope.launch {
                                             try {
-                                                viewModel.getWebtoonList(apiListNames[i])
+                                                viewModel.getWebtoons(apiListNames[i])
                                             } catch(e : HttpException){
                                                 var message = ""
                                                 val errorBody = JSONObject(e.response()?.errorBody()?.string())
@@ -105,22 +105,22 @@ fun MainPage() {
             items(rowNum){ rowIndex ->
                 val rangeStart = rowIndex*3
                 var rangeEnd = rangeStart + 2
-                if(rangeEnd > webtoonList.lastIndex) rangeEnd = webtoonList.lastIndex
-                RowOfWebtoon(webtoonList.slice(rangeStart..rangeEnd))
+                if(rangeEnd >= webtoonList.itemCount) rangeEnd = webtoonList.itemCount-1
+                RowOfWebtoon(webtoonList.itemSnapshotList.slice(rangeStart .. rangeEnd))
             }
         }
     }
 }
 
 @Composable
-fun RowOfWebtoon(rowList : List<Webtoon>){
+fun RowOfWebtoon(rowList: List<Webtoon?>){
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
     ){
         for(i in 0..2){
             if(i<rowList.size){
-                Webtoon(rowList[i])
+                rowList[i]?.let { Webtoon(it) }
             }
             else{
                 //Empty Webtoon
@@ -132,7 +132,10 @@ fun RowOfWebtoon(rowList : List<Webtoon>){
 @Composable
 fun Webtoon(webtoon: Webtoon) {
     Row {
-        Text(text = webtoon.title)
+        Text(
+            text = webtoon.title,
+            color = Color.White
+        )
     }
 }
 

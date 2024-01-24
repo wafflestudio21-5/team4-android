@@ -8,6 +8,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MyRestAPI {
     @POST("/accounts/")
@@ -21,6 +22,7 @@ interface MyRestAPI {
 
     @GET("/api/webtoonList/{list_type}")
     suspend fun getWebtoonList(
-        @Path(value = "list_type") type:String
+        @Path(value = "list_type") type:String,
+        @Query(value = "cursor") cursor:String?
     ):WebtoonListRequset
 }
