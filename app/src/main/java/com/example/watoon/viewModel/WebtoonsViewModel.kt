@@ -1,13 +1,11 @@
-package com.example.watoon
+package com.example.watoon.viewModel
 
-import android.annotation.SuppressLint
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.watoon.data.Webtoon
+import com.example.watoon.paging.WebtoonsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject

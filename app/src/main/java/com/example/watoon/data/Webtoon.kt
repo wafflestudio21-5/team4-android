@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 data class Webtoon(
     @Json(name = "id") val id:Int,
     @Json(name = "title") val title:String,
-    @Json(name = "releasedDate") val nickname:String,
+    @Json(name = "releasedDate") val releasedDate:String,
     @Json(name = "author") val author:User,
     @Json(name = "totalRating") val totalRating:String
 )
