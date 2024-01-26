@@ -1,56 +1,55 @@
 package com.example.watoon.pages
 
-import android.net.Uri
-import android.provider.OpenableColumns
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
+import com.example.watoon.data.Webtoon
+import com.example.watoon.viewModel.UploadViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WebtoonUploadPage(onEnter: (String) -> Unit) {
-    var webtoonTitle by remember { mutableStateOf("") }
-    var episodeTitle by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
-    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
-    val context = LocalContext.current
+    val viewModel: UploadViewModel = hiltViewModel()
 
-    // Set up file picker launcher
-    val chooseFile = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-        selectedFileUri = uri
-    }
+    val myWebtoonList by viewModel.myWebtoonList.collectAsState()
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize()
     ) {
         Row(
             modifier = Modifier
-                .align(Alignment.Start)
-                .padding(8.dp)
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
                 onClick = {
@@ -59,60 +58,55 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
             ) {
                 Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
             }
+            Text(
+                text = "업로드할 웹툰 선택",
+                modifier = Modifier.weight(1f)
+            )
         }
-        TextField(
-            value = webtoonTitle,
-            onValueChange = { webtoonTitle = it },
-            label = { Text("웹툰 제목") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-        TextField(
-            value = episodeTitle,
-            onValueChange = { episodeTitle = it },
-            label = { Text("에피소드 제목") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-        Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Text(text = "파일 첨부")
-            IconButton(
-                onClick = { chooseFile.launch("*/*") },
-                modifier = Modifier
-                    .padding(8.dp)
-            ) {
-                Icon(imageVector = Icons.Default.AddCircle, contentDescription = null)
+
+        LaunchedEffect(Unit) {
+            CoroutineScope(Dispatchers.Main).launch {
+                try{
+                    isLoading = true
+                    viewModel.loadMyWebtoon()
+                } catch(e : HttpException){
+
+                } finally{
+                    isLoading = false
+                }
             }
         }
-        // Display the selected file information
-        if (selectedFileUri != null) {
-            Text("Selected File: ${getFileName(selectedFileUri!!)}")
-        }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(8.dp)
-        ){
-            MenuButton(text = "새 웹툰") {
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            /*items(myWebtoonList) {webtoon ->
+                WebtoonItem(webtoon = webtoon, onClick = { onEnter(NavigationDestination.EpisodeUpload) })
             }
-            MenuButton(text = "새 에피소드"){
+            if (isLoading) {
+                item {
+                    Text("로딩 중입니다...")
+                }
+            }*/
+            items(1){
+                WebtoonItem(webtoon = Webtoon(123, "웹툰1"), onClick = { onEnter(NavigationDestination.EpisodeUpload)})
+            }
+            item{
+                MenuButton(text = "새 웹툰"){
+                    onEnter(NavigationDestination.NewWebtoon)
+                }
             }
         }
     }
 }
 
 @Composable
-// Function to get the file name from the URI
-fun getFileName(uri: Uri): String {
-    val cursor = LocalContext.current.contentResolver.query(uri, null, null, null, null)
-    cursor?.use {
-        val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        it.moveToFirst()
-        return it.getString(nameIndex)
+fun WebtoonItem(webtoon: Webtoon, onClick: () -> Unit) {
+    Row(modifier = Modifier.fillMaxWidth().clickable { onClick() }){
+        Text(webtoon.title, textAlign = TextAlign.Center)
     }
-    return "Unknown"
 }
+

@@ -4,10 +4,15 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -51,6 +56,33 @@ fun CreateAccountPage(onEnter: (String) -> Unit){
     ) {
         val context = LocalContext.current
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = {
+                    onEnter(NavigationDestination.Login)
+                }
+            ) {
+                Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
+            }
+            Text(
+                text = "회원가입",
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        TextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("이메일 주소") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
         TextField(
             value = nickname,
             onValueChange = { nickname = it },
@@ -73,14 +105,6 @@ fun CreateAccountPage(onEnter: (String) -> Unit){
             onValueChange = { pw2 = it },
             label = { Text("비밀번호 확인") },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-        TextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("이메일 주소") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)

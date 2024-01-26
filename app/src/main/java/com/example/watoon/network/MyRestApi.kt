@@ -3,6 +3,8 @@ package com.example.watoon.network
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.PasswordResetRequest
 import com.example.watoon.data.RegisterRequest
+import com.example.watoon.data.UploadWebtoonRequest
+import com.example.watoon.data.Webtoon
 import com.example.watoon.data.WebtoonListRequset
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -19,6 +21,14 @@ interface MyRestAPI {
 
     @POST("/accounts/password/reset/")
     suspend fun passwordReset(@Body data : PasswordResetRequest)
+
+    //헤더 추가 필요
+    @GET("/api/profile/{id}/uploadWebtoonList")
+    suspend fun loadMyWebtoon() : List<Webtoon>
+
+    //헤더 추가 필요
+    @POST("/api/webtoonList")
+    suspend fun uploadWebtoon(@Body data : UploadWebtoonRequest)
 
     @GET("/api/webtoonList/{list_type}")
     suspend fun getWebtoonList(

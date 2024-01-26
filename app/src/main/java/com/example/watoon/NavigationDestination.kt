@@ -8,4 +8,6 @@ object NavigationDestination {
     const val SignupComplete = "SignupComplete"
     const val Search = "Search"
     const val WebtoonUpload = "WebtoonUpload"
+    const val EpisodeUpload = "EpisodeUpload"
+    const val NewWebtoon = "NewWebtoon"
 }
