@@ -2,6 +2,7 @@ package com.example.watoon.pages
 
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -26,17 +27,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
+import com.example.watoon.viewModel.UploadViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EpisodeUploadPage(onEnter: (String) -> Unit) {
+    var isLoading by remember { mutableStateOf(false) }
+    val viewModel: UploadViewModel = hiltViewModel()
+
     var episodeTitle by remember { mutableStateOf("") }
-
-    val context = LocalContext.current
-
+    val episodeNumber by remember { mutableStateOf(0)}
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
-    // Set up file picker launcher
     val chooseFile = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
         selectedFileUri = uri
     }
@@ -46,6 +54,7 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
         )
     {
+        val context = LocalContext.current
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -64,6 +73,14 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
                 modifier = Modifier.weight(1f)
             )
         }
+        TextField(
+            value = episodeTitle,
+            onValueChange = { episodeTitle = it },
+            label = { Text("화수") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
         TextField(
             value = episodeTitle,
             onValueChange = { episodeTitle = it },
@@ -89,7 +106,25 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
             Text("Selected File: ${getFileName(selectedFileUri!!)}")
         }
         MenuButton(text = "업로드") {
-            ///웹툰 추가 api 연결 필요
+            isLoading = true
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    viewModel.uploadEpisode(episodeTitle, episodeNumber)
+                    Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
+                } catch (e: HttpException) {
+                    var message = ""
+                    val errorBody = JSONObject(e.response()?.errorBody()?.string())
+                    errorBody.keys().forEach { key ->
+                        message += ("$key - ${errorBody.getString(key)}" + "\n")
+                    }
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                } finally {
+                    isLoading = false
+                }
+            }
+        }
+        if (isLoading) {
+            Text("로딩 중입니다...")
         }
     }
 }
