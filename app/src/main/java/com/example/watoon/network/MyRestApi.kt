@@ -18,6 +18,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 
+
 interface MyRestAPI {
     @POST("/accounts/")
     suspend fun createAccount(@Body data : RegisterRequest)
@@ -47,10 +48,9 @@ interface MyRestAPI {
         @Body data : UploadEpisodeRequest
     )
 
+
     @GET("/api/webtoonList/{list_type}")
     suspend fun getWebtoonList(
         @Path(value = "list_type") type:String,
         @Query(value = "cursor") cursor:String?
     ):WebtoonListRequset
-
-}
