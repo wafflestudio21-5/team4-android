@@ -1,6 +1,7 @@
 package com.example.watoon.viewModel
 
 import androidx.lifecycle.ViewModel
+import com.example.watoon.MyApp
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.PasswordResetRequest
 import com.example.watoon.data.RegisterRequest
@@ -18,7 +19,12 @@ class LoginViewModel @Inject constructor(private var api : MyRestAPI) : ViewMode
 
     suspend fun login(email:String, pw:String) {
         val loginRequest = LoginRequest(email, pw)
-        api.login(loginRequest)
+
+        val loginResponse = api.login(loginRequest)
+        val token = loginResponse.access
+        MyApp.preferences.setToken("token", token)
+        val id = loginResponse.user.id
+        MyApp.preferences.setToken("id", id.toString())
     }
 
     suspend fun passwordReset(email:String) {

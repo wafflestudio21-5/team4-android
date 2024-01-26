@@ -21,6 +21,10 @@ class NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(
                 HttpLoggingInterceptor {log -> Log.d("okhttp3", "HTTP: $log")}
+                    .setLevel(HttpLoggingInterceptor.Level.HEADERS)
+            )
+            .addInterceptor(
+                HttpLoggingInterceptor {log -> Log.d("okhttp3", "HTTP: $log")}
                     .setLevel(HttpLoggingInterceptor.Level.BODY)
             )
             /*.addInterceptor { chain ->

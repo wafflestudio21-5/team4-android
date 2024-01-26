@@ -118,7 +118,7 @@ fun MainPageBasic(onEnter: (String) -> Unit,) {
                 .padding(top = 60.dp, bottom = 60.dp)
         ) {
             if(showMainPage){
-                MainPage(mutableListOf<Int>(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15))
+                MainPage()
             }
             else{
                 UserPage()

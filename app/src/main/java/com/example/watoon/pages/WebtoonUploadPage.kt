@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
@@ -37,7 +38,6 @@ import retrofit2.HttpException
 @Composable
 fun WebtoonUploadPage(onEnter: (String) -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
-
     val viewModel: UploadViewModel = hiltViewModel()
 
     val myWebtoonList by viewModel.myWebtoonList.collectAsState()
@@ -83,17 +83,18 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
                 .padding(top = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            /*items(myWebtoonList) {webtoon ->
+            items(myWebtoonList) {webtoon ->
+                viewModel.webtoonId = webtoon.id
                 WebtoonItem(webtoon = webtoon, onClick = { onEnter(NavigationDestination.EpisodeUpload) })
             }
             if (isLoading) {
                 item {
                     Text("로딩 중입니다...")
                 }
-            }*/
-            items(1){
-                WebtoonItem(webtoon = Webtoon(123, "웹툰1"), onClick = { onEnter(NavigationDestination.EpisodeUpload)})
             }
+            /*items(1){
+                WebtoonItem(webtoon = Webtoon(123, "웹툰1"), onClick = { onEnter(NavigationDestination.EpisodeUpload)})
+            }*/
             item{
                 MenuButton(text = "새 웹툰"){
                     onEnter(NavigationDestination.NewWebtoon)
