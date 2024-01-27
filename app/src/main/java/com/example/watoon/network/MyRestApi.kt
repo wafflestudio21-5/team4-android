@@ -8,6 +8,7 @@ import com.example.watoon.data.UploadEpisodeRequest
 import com.example.watoon.data.UploadWebtoonRequest
 import com.example.watoon.data.Webtoon
 import com.example.watoon.data.WebtoonListRequset
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -21,36 +22,36 @@ import retrofit2.http.Query
 
 interface MyRestAPI {
     @POST("/accounts/")
-    suspend fun createAccount(@Body data : RegisterRequest)
+    suspend fun createAccount(@Body data: RegisterRequest)
 
     @POST("/accounts/login/")
-    suspend fun login(@Body data : LoginRequest) : LoginResponse
+    suspend fun login(@Body data: LoginRequest): LoginResponse
 
     @POST("/accounts/password/reset/")
-    suspend fun passwordReset(@Body data : PasswordResetRequest)
+    suspend fun passwordReset(@Body data: PasswordResetRequest)
 
     @GET("/api/profile/{id}/uploadWebtoonList")
     suspend fun loadMyWebtoon(
-        //@Header("token") token: String,
         @Path(value = "id") id: String
-    ) : List<Webtoon>
+    ): List<Webtoon>
 
     @POST("/api/webtoonList")
     suspend fun uploadWebtoon(
-        @Header("X-CSRFToken") token: String,
-        @Body data : UploadWebtoonRequest
+        @Header("Cookie") token: String,
+        @Body data: UploadWebtoonRequest
     )
 
     @POST("/api/webtoon/{id}/episode")
     suspend fun uploadEpisode(
-        @Header("X-CSRFToken") token: String,
+        @Header("Cookie") token: String,
         @Path(value = "id") id: String,
-        @Body data : UploadEpisodeRequest
+        @Body data: UploadEpisodeRequest
     )
 
 
     @GET("/api/webtoonList/{list_type}")
     suspend fun getWebtoonList(
-        @Path(value = "list_type") type:String,
-        @Query(value = "cursor") cursor:String?
-    ):WebtoonListRequset
+        @Path(value = "list_type") type: String,
+        @Query(value = "cursor") cursor: String?
+    ): WebtoonListRequset
+}

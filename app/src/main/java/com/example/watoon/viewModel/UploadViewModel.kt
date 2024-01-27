@@ -20,7 +20,6 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
 
     suspend fun loadMyWebtoon() {
         myWebtoonList.value = api.loadMyWebtoon(
-            //MyApp.preferences.getToken("token", ""),
             MyApp.preferences.getToken("id", ""))
     }
 

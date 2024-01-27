@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
+import com.example.watoon.data.User
 import com.example.watoon.data.Webtoon
 import com.example.watoon.viewModel.UploadViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -92,9 +93,9 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
                     Text("로딩 중입니다...")
                 }
             }
-            /*items(1){
-                WebtoonItem(webtoon = Webtoon(123, "웹툰1"), onClick = { onEnter(NavigationDestination.EpisodeUpload)})
-            }*/
+            items(1){
+                WebtoonItem(webtoon = Webtoon(123, "웹툰1", "24.01.27.", User("a", "a", "a"), "10"), onClick = { onEnter(NavigationDestination.EpisodeUpload)})
+            }
             item{
                 MenuButton(text = "새 웹툰"){
                     onEnter(NavigationDestination.NewWebtoon)

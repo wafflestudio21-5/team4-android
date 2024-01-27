@@ -67,7 +67,7 @@ fun NewWebtoonPage (onEnter: (String) -> Unit){
                 Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
             }
             Text(
-                text = "에피소드 업로드",
+                text = "웹툰 업로드",
                 modifier = Modifier.weight(1f)
             )
         }
