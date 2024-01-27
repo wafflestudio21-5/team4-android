@@ -41,7 +41,7 @@ import java.util.Calendar
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainPage(
-    onEnter: (String) -> Unit
+    toWebtoonMain : (Webtoon) -> Unit
 ) {
     val viewModel: WebtoonsViewModel = hiltViewModel()
     val webtoonList = viewModel.webtoonList.collectAsLazyPagingItems()
@@ -61,7 +61,7 @@ fun MainPage(
         try {
             viewModel.getWebtoons(apiListNames[listNum])
         } catch (e: HttpException) {
-           makeError(context, e)
+            makeError(context, e)
         }
     }
     
@@ -112,7 +112,7 @@ fun MainPage(
                 val rangeStart = rowIndex*3
                 var rangeEnd = rangeStart + 2
                 if(rangeEnd >= webtoonList.itemCount) rangeEnd = webtoonList.itemCount-1
-                RowOfWebtoon(webtoonList.itemSnapshotList.slice(rangeStart .. rangeEnd), onEnter)
+                RowOfWebtoon(webtoonList.itemSnapshotList.slice(rangeStart .. rangeEnd), toWebtoonMain)
             }
         }
     }
@@ -130,7 +130,7 @@ fun makeError(context: Context, e:HttpException){
 @Composable
 fun RowOfWebtoon(
     rowList: List<Webtoon?>,
-    onEnter: (String) -> Unit
+    toWebtoonMain : (Webtoon) -> Unit
 ){
     val emptyWebtoon = Webtoon(
         id = 0, title = " ", releasedDate = " ", totalRating = " ",
@@ -138,7 +138,7 @@ fun RowOfWebtoon(
             nickname = " ", email = " ", password = null
         )
     )
-    val emptyFunc : (String)->Unit = {}
+    val emptyFunc : (Webtoon)->Unit = {}
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -146,21 +146,21 @@ fun RowOfWebtoon(
     ){
         for(i in 0..2){
             if(i<rowList.size){
-                rowList[i]?.let { Webtoon(webtoon = it, onClick = onEnter)}
+                rowList[i]?.let { Webtoon(webtoon = it, toWebtoonMain = toWebtoonMain)}
             }
             else{
-                Webtoon(webtoon = emptyWebtoon, onClick = emptyFunc)
+                Webtoon(webtoon = emptyWebtoon, toWebtoonMain = emptyFunc)
             }
         }
     }
 }
 
 @Composable
-fun Webtoon(webtoon: Webtoon, onClick: (String)-> Unit) {
+fun Webtoon(webtoon: Webtoon, toWebtoonMain : (Webtoon) -> Unit) {
     Row(
         modifier = Modifier
             .clickable {
-                onClick(NavigationDestination.WebtoonMain)
+                toWebtoonMain(webtoon)
             }
     ) {
         Text(

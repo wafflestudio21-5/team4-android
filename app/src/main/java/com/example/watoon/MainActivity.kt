@@ -43,15 +43,20 @@ private fun SetNavigation() {
         composable(NavigationDestination.Login) {
             LoginPage(onEnter = { navController.navigate(it) })
         }
-
         composable(NavigationDestination.Main) {
-            MainPageBasic(onEnter = { navController.navigate(it) })
+            MainPageBasic(
+                onEnter = { navController.navigate(it) },
+                toWebtoonMain = { navController.navigate("${NavigationDestination.WebtoonMain}/${it.id}")}
+            )
         }
-
-        composable(NavigationDestination.WebtoonMain) {
-            WebtoonMainPage(onEnter = { navController.navigate(it) })
+        composable(
+            "${NavigationDestination.WebtoonMain}/{webtoonId}",
+            arguments = listOf(navArgument("webtoonId"){type = NavType.IntType})
+        ){
+            WebtoonMainPage(
+                webtoonId = it.arguments?.getInt("webtoonId")?:1,
+            )
         }
-
         composable(NavigationDestination.CreateAccount) {
             CreateAccountPage(onEnter = { navController.navigate(it) })
         }

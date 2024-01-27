@@ -42,6 +42,7 @@ import com.example.watoon.ui.theme.WatoonTheme
 @Composable
 fun MainPageBasic(
     onEnter: (String) -> Unit,
+    toWebtoonMain : (Webtoon) -> Unit
 ) {
     var showMainPage by rememberSaveable { mutableStateOf(true) }
 
@@ -121,7 +122,7 @@ fun MainPageBasic(
                 .padding(top = 60.dp, bottom = 60.dp)
         ) {
             if(showMainPage){
-                MainPage(onEnter)
+                MainPage(toWebtoonMain)
             }
             else{
                 UserPage()

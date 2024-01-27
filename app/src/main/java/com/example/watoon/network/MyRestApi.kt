@@ -1,5 +1,6 @@
 package com.example.watoon.network
 
+import com.example.watoon.data.EpisodeListRequest
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.LoginResponse
 import com.example.watoon.data.PasswordResetRequest
@@ -48,10 +49,15 @@ interface MyRestAPI {
         @Body data : UploadEpisodeRequest
     )
 
-
     @GET("/api/webtoonList/{list_type}")
     suspend fun getWebtoonList(
         @Path(value = "list_type") type:String,
         @Query(value = "cursor") cursor:String?
     ):WebtoonListRequset
+
+    @GET("/api/webtoon/{id}/episode")
+    suspend fun getEpisodeList(
+        @Path(value = "id") id: String,
+        @Query(value = "cursor") cursor:String?
+    ):EpisodeListRequest
 }
