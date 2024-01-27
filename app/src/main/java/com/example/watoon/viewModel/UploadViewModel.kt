@@ -18,6 +18,8 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
     val myWebtoonList: MutableStateFlow<List<Webtoon>> = MutableStateFlow(listOf())
     var webtoonId: Int = 0
 
+    val searchWebtoonList: MutableStateFlow<List<Webtoon>> = MutableStateFlow(listOf())
+
     suspend fun loadMyWebtoon() {
         myWebtoonList.value = api.loadMyWebtoon(
             MyApp.preferences.getToken("id", ""))
@@ -31,5 +33,9 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
     suspend fun uploadEpisode(title: String, episodeNumber: Int){
         val uploadEpisodeRequest = UploadEpisodeRequest(title, episodeNumber)
         api.uploadEpisode(MyApp.preferences.getToken("token", ""), webtoonId.toString(), uploadEpisodeRequest)
+    }
+
+    suspend fun search(search : String){
+        searchWebtoonList.value = api.search(search)
     }
 }

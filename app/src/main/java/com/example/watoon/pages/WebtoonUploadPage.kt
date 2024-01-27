@@ -94,7 +94,7 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
                 }
             }
             items(1){
-                WebtoonItem(webtoon = Webtoon(123, "웹툰1", "24.01.27.", User("a", "a", "a"), "10"), onClick = { onEnter(NavigationDestination.EpisodeUpload)})
+                WebtoonItem(webtoon = Webtoon(123, "웹툰1", "24.01.27.", User("a", "a", "a"), "10", false), onClick = { onEnter(NavigationDestination.EpisodeUpload)})
             }
             item{
                 MenuButton(text = "새 웹툰"){

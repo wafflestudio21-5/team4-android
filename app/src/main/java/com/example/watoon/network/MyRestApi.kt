@@ -54,4 +54,9 @@ interface MyRestAPI {
         @Path(value = "list_type") type: String,
         @Query(value = "cursor") cursor: String?
     ): WebtoonListRequset
+
+    @GET("/api/webtoonList/search")
+    suspend fun search(
+        @Query(value = "search") search : String
+    ): List<Webtoon>
 }

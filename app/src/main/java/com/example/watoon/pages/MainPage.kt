@@ -130,7 +130,7 @@ fun RowOfWebtoon(rowList: List<Webtoon?>){
         id = 0, title = " ", releasedDate = " ", totalRating = " ",
         author = User(
             nickname = " ", email = " ", password = null
-        )
+        ), subscribing = false
     )
 
     Row(

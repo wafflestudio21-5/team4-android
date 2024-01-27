@@ -1,9 +1,13 @@
 package com.example.watoon.pages
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Search
@@ -13,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,36 +25,75 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
+import com.example.watoon.viewModel.UploadViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchPage(onEnter: (String) -> Unit) {
     var keyword by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    val viewModel: UploadViewModel = hiltViewModel()
+    val searchWebtoonList by viewModel.searchWebtoonList.collectAsState()
 
-    Row(modifier = Modifier.fillMaxWidth()){
-        IconButton(
-            onClick = {
-                onEnter(NavigationDestination.Main)
-            },
-            modifier = Modifier.align(Alignment.CenterVertically)
-        ) {
-            Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            IconButton(
+                onClick = {
+                    onEnter(NavigationDestination.Main)
+                },
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
+            }
+            TextField(
+                value = keyword,
+                onValueChange = { keyword = it },
+                label = { Text("검색어를 입력하세요.") },
+                modifier = Modifier
+                    .padding(8.dp)
+            )
+            IconButton(
+                onClick = {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        try{
+                            isLoading = true
+                            viewModel.search(keyword)
+                        } catch(e : HttpException){
+
+                        } finally{
+                            isLoading = false
+                        }
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = null)
+            }
         }
-        TextField(
-            value = keyword,
-            onValueChange = { keyword = it },
-            label = { Text("검색어를 입력하세요.") },
+        LazyColumn(
             modifier = Modifier
-                .padding(8.dp)
-        )
-        IconButton(
-            onClick = {
-                //리스트 보여주기
-            },
-            modifier = Modifier.align(Alignment.CenterVertically)
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(imageVector = Icons.Default.Search, contentDescription = null)
+            items(searchWebtoonList) {webtoon ->
+                viewModel.webtoonId = webtoon.id
+                //webtoonMain 이동 추가 필요
+                WebtoonItem(webtoon = webtoon, onClick = { onEnter(NavigationDestination.EpisodeUpload) })
+            }
+            if (isLoading) {
+                item {
+                    Text("로딩 중입니다...")
+                }
+            }
         }
     }
 }
