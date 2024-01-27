@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.watoon.NavigationDestination
+import com.example.watoon.data.Webtoon
 
 import com.example.watoon.ui.theme.WatoonTheme
 
@@ -39,7 +40,9 @@ import com.example.watoon.ui.theme.WatoonTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainPageBasic(onEnter: (String) -> Unit,) {
+fun MainPageBasic(
+    onEnter: (String) -> Unit,
+) {
     var showMainPage by rememberSaveable { mutableStateOf(true) }
 
     Scaffold(
@@ -118,7 +121,7 @@ fun MainPageBasic(onEnter: (String) -> Unit,) {
                 .padding(top = 60.dp, bottom = 60.dp)
         ) {
             if(showMainPage){
-                MainPage()
+                MainPage(onEnter)
             }
             else{
                 UserPage()
@@ -127,11 +130,3 @@ fun MainPageBasic(onEnter: (String) -> Unit,) {
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun MainPageBasicPreview() {
-    WatoonTheme {
-        //MainPageBasic()
-    }
-}

@@ -4,9 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.watoon.pages.CreateAccountPage
 import com.example.watoon.pages.EmailSentPage
 import com.example.watoon.pages.EpisodeUploadPage
@@ -15,6 +18,7 @@ import com.example.watoon.pages.MainPageBasic
 import com.example.watoon.pages.NewWebtoonPage
 import com.example.watoon.pages.SearchPage
 import com.example.watoon.pages.SignupCompletePage
+import com.example.watoon.pages.WebtoonMainPage
 import com.example.watoon.pages.WebtoonUploadPage
 import com.example.watoon.ui.theme.WatoonTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,9 +43,15 @@ private fun SetNavigation() {
         composable(NavigationDestination.Login) {
             LoginPage(onEnter = { navController.navigate(it) })
         }
+
         composable(NavigationDestination.Main) {
             MainPageBasic(onEnter = { navController.navigate(it) })
         }
+
+        composable(NavigationDestination.WebtoonMain) {
+            WebtoonMainPage(onEnter = { navController.navigate(it) })
+        }
+
         composable(NavigationDestination.CreateAccount) {
             CreateAccountPage(onEnter = { navController.navigate(it) })
         }

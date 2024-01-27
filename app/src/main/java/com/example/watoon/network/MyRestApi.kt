@@ -54,3 +54,4 @@ interface MyRestAPI {
         @Path(value = "list_type") type:String,
         @Query(value = "cursor") cursor:String?
     ):WebtoonListRequset
+}

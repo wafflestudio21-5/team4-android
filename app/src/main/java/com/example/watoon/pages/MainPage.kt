@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.watoon.NavigationDestination
 import com.example.watoon.viewModel.WebtoonsViewModel
 import com.example.watoon.data.User
 import com.example.watoon.data.Webtoon
@@ -39,7 +40,9 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainPage() {
+fun MainPage(
+    onEnter: (String) -> Unit
+) {
     val viewModel: WebtoonsViewModel = hiltViewModel()
     val webtoonList = viewModel.webtoonList.collectAsLazyPagingItems()
 
@@ -109,7 +112,7 @@ fun MainPage() {
                 val rangeStart = rowIndex*3
                 var rangeEnd = rangeStart + 2
                 if(rangeEnd >= webtoonList.itemCount) rangeEnd = webtoonList.itemCount-1
-                RowOfWebtoon(webtoonList.itemSnapshotList.slice(rangeStart .. rangeEnd))
+                RowOfWebtoon(webtoonList.itemSnapshotList.slice(rangeStart .. rangeEnd), onEnter)
             }
         }
     }
@@ -125,13 +128,17 @@ fun makeError(context: Context, e:HttpException){
 }
 
 @Composable
-fun RowOfWebtoon(rowList: List<Webtoon?>){
+fun RowOfWebtoon(
+    rowList: List<Webtoon?>,
+    onEnter: (String) -> Unit
+){
     val emptyWebtoon = Webtoon(
         id = 0, title = " ", releasedDate = " ", totalRating = " ",
         author = User(
             nickname = " ", email = " ", password = null
         )
     )
+    val emptyFunc : (String)->Unit = {}
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -139,18 +146,23 @@ fun RowOfWebtoon(rowList: List<Webtoon?>){
     ){
         for(i in 0..2){
             if(i<rowList.size){
-                rowList[i]?.let { Webtoon(it) }
+                rowList[i]?.let { Webtoon(webtoon = it, onClick = onEnter)}
             }
             else{
-                Webtoon(emptyWebtoon)
+                Webtoon(webtoon = emptyWebtoon, onClick = emptyFunc)
             }
         }
     }
 }
 
 @Composable
-fun Webtoon(webtoon: Webtoon) {
-    Row {
+fun Webtoon(webtoon: Webtoon, onClick: (String)-> Unit) {
+    Row(
+        modifier = Modifier
+            .clickable {
+                onClick(NavigationDestination.WebtoonMain)
+            }
+    ) {
         Text(
             text = webtoon.title,
             color = Color.White
