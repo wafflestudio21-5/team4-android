@@ -76,7 +76,7 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
         TextField(
             value = episodeNumber,
             onValueChange = { episodeNumber = it },
-            label = { Text("에피소드 제목") },
+            label = { Text("화수") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)

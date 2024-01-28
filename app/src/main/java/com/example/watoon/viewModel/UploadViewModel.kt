@@ -39,7 +39,9 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
     }
 
     suspend fun uploadEpisode(title: String, episodeNumber: String){
-        val uploadEpisodeRequest = UploadEpisodeRequest(title, episodeNumber.toInt())
+        var episodeNumberInt: Int? = episodeNumber.toIntOrNull()
+        if(episodeNumberInt==null) episodeNumberInt = -1
+        val uploadEpisodeRequest = UploadEpisodeRequest(title, episodeNumberInt)
         api.uploadEpisode("access=" + MyApp.preferences.getToken("token", ""), webtoonId.toString(), uploadEpisodeRequest)
     }
 

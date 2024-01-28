@@ -167,7 +167,7 @@ fun NewWebtoonPage (onEnter: (String) -> Unit){
                             var message = ""
                             val errorBody = JSONObject(e.response()?.errorBody()?.string())
                             errorBody.keys().forEach { key ->
-                                message += ("$key - ${errorBody.getString(key)}" + "\n")
+                                message += ("$key - ${errorBody.getString(key).substring(2 until errorBody.getString(key).length - 2)}" + "\n")
                             }
                             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                         } finally {
