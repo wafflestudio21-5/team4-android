@@ -1,8 +1,10 @@
 package com.example.watoon.paging
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.example.watoon.MyApp
+import com.example.watoon.data.CommentRequest
 import com.example.watoon.network.MyRestAPI
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,11 +36,17 @@ class Repository @Inject constructor(
             pageSize = 10
         ),
         pagingSourceFactory = {
-            PagingSourceComment(id = id,api = api)
+            Log.d("comment api - repository", "called")
+            CommentPagingSource(episodeId = id, api = api)
         }
     ).flow
 
     suspend fun deleteComment(id: String){
         api.deleteComment("access=" + MyApp.preferences.getToken("token", ""), id)
+    }
+
+    suspend fun uploadComment(episodeId : String, content : String){
+        val commentRequest = CommentRequest(content)
+        api.uploadComment("access=" + MyApp.preferences.getToken("token", ""), episodeId, commentRequest)
     }
 }

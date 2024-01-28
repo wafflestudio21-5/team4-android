@@ -1,5 +1,6 @@
 package com.example.watoon.network
 
+import com.example.watoon.data.CommentRequest
 import com.example.watoon.data.EpisodeListRequest
 import com.example.watoon.data.CommentResponse
 import com.example.watoon.data.LoginRequest
@@ -89,5 +90,12 @@ interface MyRestAPI {
     suspend fun deleteComment(
         @Header("Cookie") token: String,
         @Path(value = "id") id: String,
+    ) : Response<Unit>
+
+    @POST("/api/episode/{id}/comment")
+    suspend fun uploadComment(
+        @Header("Cookie") token : String,
+        @Path(value = "id") id : String,
+        @Body data : CommentRequest
     )
 }

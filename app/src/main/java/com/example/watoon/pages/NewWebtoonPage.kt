@@ -1,5 +1,6 @@
 package com.example.watoon.pages
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -135,9 +136,7 @@ fun NewWebtoonPage (viewModel: UploadViewModel, onEnter: (String) -> Unit){
                 TextField(
                     value = tag1,
                     onValueChange = { tag1 = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                    modifier = Modifier.fillMaxWidth().padding(8.dp)
                 )
             }
 
@@ -145,11 +144,10 @@ fun NewWebtoonPage (viewModel: UploadViewModel, onEnter: (String) -> Unit){
                 TextField(
                     value = tag2,
                     onValueChange = { tag2 = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                    modifier = Modifier.fillMaxWidth().padding(8.dp)
                 )
             }
+
             item {
                 MenuButton(text = "추가") {
                     isLoading = true
@@ -162,6 +160,11 @@ fun NewWebtoonPage (viewModel: UploadViewModel, onEnter: (String) -> Unit){
                                 tag1, tag2
                             )
                             Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
+                            title = ""
+                            description = ""
+                            uploadDays = listOf()
+                            tag1 = ""
+                            tag2 = ""
                         } catch (e: HttpException) {
                             makeError(context, e)
                         } finally {
