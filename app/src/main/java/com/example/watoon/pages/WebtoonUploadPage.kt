@@ -1,5 +1,6 @@
 package com.example.watoon.pages
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,9 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.watoon.NavigationDestination
 import com.example.watoon.data.User
 import com.example.watoon.data.Webtoon
@@ -34,6 +38,7 @@ import com.example.watoon.viewModel.UploadViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import retrofit2.HttpException
 
 @Composable
@@ -46,6 +51,8 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
+        val context = LocalContext.current
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -71,7 +78,12 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
                     isLoading = true
                     viewModel.loadMyWebtoon()
                 } catch(e : HttpException){
-
+                    var message = ""
+                    val errorBody = JSONObject(e.response()?.errorBody()?.string())
+                    errorBody.keys().forEach { key ->
+                        message += ("$key - ${errorBody.getString(key)}" + "\n")
+                    }
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                 } finally{
                     isLoading = false
                 }
@@ -93,9 +105,9 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
                     Text("로딩 중입니다...")
                 }
             }
-            items(1){
+            /*items(1){
                 WebtoonItem(webtoon = Webtoon(123, "웹툰1", "24.01.27.", User("a", "a", "a"), "10", false), onClick = { onEnter(NavigationDestination.EpisodeUpload)})
-            }
+            }*/
             item{
                 MenuButton(text = "새 웹툰"){
                     onEnter(NavigationDestination.NewWebtoon)
@@ -107,8 +119,32 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
 
 @Composable
 fun WebtoonItem(webtoon: Webtoon, onClick: () -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth().clickable { onClick() }){
-        Text(webtoon.title, textAlign = TextAlign.Center)
+    val viewModel: UploadViewModel = hiltViewModel()
+
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable { onClick() }){
+        val context = LocalContext.current
+
+        Text(webtoon.title, textAlign = TextAlign.Center, modifier = Modifier.padding(8.dp))
+        IconButton(
+            onClick = {
+                CoroutineScope(Dispatchers.Main).launch {
+                    try{
+                        viewModel.deleteWebtoon(webtoon.id)
+                    } catch(e : HttpException){
+                        var message = ""
+                        val errorBody = JSONObject(e.response()?.errorBody()?.string())
+                        errorBody.keys().forEach { key ->
+                            message += ("$key - ${errorBody.getString(key)}" + "\n")
+                        }
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        ) {
+            Icon(imageVector = Icons.Default.Clear, contentDescription = null)
+        }
     }
 }
 

@@ -43,7 +43,7 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
     val viewModel: UploadViewModel = hiltViewModel()
 
     var episodeTitle by remember { mutableStateOf("") }
-    val episodeNumber by remember { mutableStateOf(0)}
+    var episodeNumber by remember { mutableStateOf("")}
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     val chooseFile = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
         selectedFileUri = uri
@@ -74,13 +74,14 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
             )
         }
         TextField(
-            value = episodeTitle,
-            onValueChange = { episodeTitle = it },
-            label = { Text("화수") },
+            value = episodeNumber,
+            onValueChange = { episodeNumber = it },
+            label = { Text("에피소드 제목") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         )
+
         TextField(
             value = episodeTitle,
             onValueChange = { episodeTitle = it },
@@ -89,6 +90,7 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
                 .fillMaxWidth()
                 .padding(8.dp)
         )
+
         Row(
             modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically

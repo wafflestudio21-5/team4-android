@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.watoon.MyApp
 import com.example.watoon.data.RegisterRequest
+import com.example.watoon.data.Tags
+import com.example.watoon.data.UploadDays
 import com.example.watoon.data.UploadEpisodeRequest
 import com.example.watoon.data.UploadWebtoonRequest
 import com.example.watoon.data.Webtoon
@@ -25,17 +27,27 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
             MyApp.preferences.getToken("id", ""))
     }
 
-    suspend fun uploadWebtoon(title : String, description : String, uploadDays : List<String>, tags : List<String>){
-        val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDays, tags)
-        api.uploadWebtoon(MyApp.preferences.getToken("token", ""), uploadWebtoonRequest)
+    suspend fun uploadWebtoon(title : String, description : String, uploadDays : List<String>, tag1 : String, tag2 : String){
+        val uploadDaysTrimmed = uploadDays.drop(1)
+        val uploadDaysList = uploadDaysTrimmed.map { UploadDays(it) }
+
+        val tags : List<Tags> = mutableListOf()
+        if(tag1 != "") tags.plus(Tags(tag1))
+        if(tag2 != "") tags.plus(Tags(tag2))
+        val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags)
+        api.uploadWebtoon("access=" + MyApp.preferences.getToken("token", ""), uploadWebtoonRequest)
     }
 
-    suspend fun uploadEpisode(title: String, episodeNumber: Int){
-        val uploadEpisodeRequest = UploadEpisodeRequest(title, episodeNumber)
-        api.uploadEpisode(MyApp.preferences.getToken("token", ""), webtoonId.toString(), uploadEpisodeRequest)
+    suspend fun uploadEpisode(title: String, episodeNumber: String){
+        val uploadEpisodeRequest = UploadEpisodeRequest(title, episodeNumber.toInt())
+        api.uploadEpisode("access=" + MyApp.preferences.getToken("token", ""), webtoonId.toString(), uploadEpisodeRequest)
     }
 
     suspend fun search(search : String){
         searchWebtoonList.value = api.search(search)
+    }
+
+    suspend fun deleteWebtoon(id : Int){
+        api.deleteWebtoon("access=" + MyApp.preferences.getToken("token", ""), id.toString())
     }
 }

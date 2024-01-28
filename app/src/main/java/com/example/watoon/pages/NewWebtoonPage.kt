@@ -160,7 +160,7 @@ fun NewWebtoonPage (onEnter: (String) -> Unit){
                                 title,
                                 description,
                                 uploadDays,
-                                listOf(tag1, tag2)
+                                tag1, tag2
                             )
                             Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
                         } catch (e: HttpException) {

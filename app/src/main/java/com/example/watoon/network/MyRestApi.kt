@@ -10,6 +10,7 @@ import com.example.watoon.data.Webtoon
 import com.example.watoon.data.WebtoonListRequset
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
@@ -59,4 +60,10 @@ interface MyRestAPI {
     suspend fun search(
         @Query(value = "search") search : String
     ): List<Webtoon>
+
+    @DELETE("/api/webtoon/{id}")
+    suspend fun deleteWebtoon(
+        @Header("Cookie") token: String,
+        @Path(value = "id") id: String,
+    ) : Object?
 }
