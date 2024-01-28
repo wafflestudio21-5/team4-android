@@ -36,6 +36,7 @@ import com.example.watoon.data.DayOfWeek
 import com.example.watoon.data.Episode
 import com.example.watoon.data.Tag
 import com.example.watoon.data.WebtoonDetailRequest
+import com.example.watoon.function.makeError
 import com.example.watoon.function.translate
 import com.example.watoon.viewModel.WebtoonMainViewModel
 import retrofit2.HttpException
@@ -50,9 +51,7 @@ fun WebtoonMainPage(
     val webtoonInfo = viewModel.webtoonInfo.collectAsState().value
 
     val context = LocalContext.current
-
-
-
+    
     LaunchedEffect(true){
         try {
             println(webtoonId)

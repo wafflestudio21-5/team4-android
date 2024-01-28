@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
+import com.example.watoon.function.makeError
 import com.example.watoon.network.MyRestAPI
 import com.example.watoon.viewModel.LoginViewModel
 import kotlinx.coroutines.CoroutineScope

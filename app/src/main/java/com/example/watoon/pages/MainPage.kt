@@ -32,6 +32,7 @@ import com.example.watoon.NavigationDestination
 import com.example.watoon.viewModel.WebtoonsViewModel
 import com.example.watoon.data.User
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.makeError
 import com.example.watoon.function.translate
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -118,15 +119,7 @@ fun MainPage(
     }
 }
 
-fun makeError(context: Context, e:HttpException){
-    var message = ""
-    val errorBody = JSONObject(e.response()?.errorBody()?.string())
-    errorBody.keys().forEach { key ->
-        message += ("$key - ${errorBody.getString(key).substring(2 until errorBody.getString(key).length - 2)}" + "\n")
-    }
-    message = message.substring(0, message.length-1)
-    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-}
+
 
 @Composable
 fun RowOfWebtoon(
