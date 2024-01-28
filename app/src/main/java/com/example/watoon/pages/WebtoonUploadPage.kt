@@ -1,5 +1,6 @@
 package com.example.watoon.pages
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,9 +43,8 @@ import org.json.JSONObject
 import retrofit2.HttpException
 
 @Composable
-fun WebtoonUploadPage(onEnter: (String) -> Unit) {
+fun WebtoonUploadPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
-    val viewModel: UploadViewModel = hiltViewModel()
 
     val myWebtoonList by viewModel.myWebtoonList.collectAsState()
 
@@ -97,8 +97,9 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(myWebtoonList) {webtoon ->
-                viewModel.webtoonId = webtoon.id
-                WebtoonItem(true, webtoon = webtoon, onClick = { onEnter(NavigationDestination.EpisodeUpload) })
+                WebtoonItem(true, webtoon = webtoon, onClick = {
+                    viewModel.webtoonId.value = webtoon.id
+                    onEnter(NavigationDestination.EpisodeUpload) })
             }
             if (isLoading) {
                 item {
@@ -130,6 +131,7 @@ fun WebtoonItem(delete: Boolean, webtoon: Webtoon, onClick: () -> Unit) {
                     CoroutineScope(Dispatchers.Main).launch {
                         try {
                             viewModel.deleteWebtoon(webtoon.id)
+                            viewModel.loadMyWebtoon()
                         } catch (e: HttpException) {
                             var message = ""
                             val errorBody = JSONObject(e.response()?.errorBody()?.string())

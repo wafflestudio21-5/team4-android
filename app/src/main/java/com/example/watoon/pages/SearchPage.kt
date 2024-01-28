@@ -35,10 +35,9 @@ import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchPage(onEnter: (String) -> Unit) {
+fun SearchPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
     var keyword by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
-    val viewModel: UploadViewModel = hiltViewModel()
     val searchWebtoonList by viewModel.searchWebtoonList.collectAsState()
 
     Column(
@@ -85,8 +84,7 @@ fun SearchPage(onEnter: (String) -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(searchWebtoonList) {webtoon ->
-                viewModel.webtoonId = webtoon.id
-                //webtoonMain 이동 추가 필요
+                //webtoonMain 이동 수정 필요
                 WebtoonItem(false, webtoon = webtoon, onClick = { onEnter(NavigationDestination.EpisodeUpload) })
             }
             if (isLoading) {

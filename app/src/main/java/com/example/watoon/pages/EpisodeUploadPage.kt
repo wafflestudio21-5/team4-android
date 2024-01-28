@@ -38,9 +38,8 @@ import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EpisodeUploadPage(onEnter: (String) -> Unit) {
+fun EpisodeUploadPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
-    val viewModel: UploadViewModel = hiltViewModel()
 
     var episodeTitle by remember { mutableStateOf("") }
     var episodeNumber by remember { mutableStateOf("")}

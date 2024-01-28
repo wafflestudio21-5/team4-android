@@ -36,7 +36,7 @@ import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewWebtoonPage (onEnter: (String) -> Unit){
+fun NewWebtoonPage (viewModel: UploadViewModel, onEnter: (String) -> Unit){
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var uploadDays by remember { mutableStateOf(listOf("")) }
@@ -44,7 +44,6 @@ fun NewWebtoonPage (onEnter: (String) -> Unit){
     var tag2 by remember { mutableStateOf("") }
 
     var isLoading by remember { mutableStateOf(false) }
-    val viewModel: UploadViewModel = hiltViewModel()
 
     Column (
         modifier = Modifier.padding(8.dp),

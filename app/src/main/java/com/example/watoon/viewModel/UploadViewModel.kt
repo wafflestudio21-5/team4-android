@@ -1,5 +1,6 @@
 package com.example.watoon.viewModel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -18,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewModel() {
     val myWebtoonList: MutableStateFlow<List<Webtoon>> = MutableStateFlow(listOf())
-    var webtoonId: Int = 0
+    var webtoonId: MutableStateFlow<Int> = MutableStateFlow(0)
 
     val searchWebtoonList: MutableStateFlow<List<Webtoon>> = MutableStateFlow(listOf())
 
@@ -42,7 +43,11 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
         var episodeNumberInt: Int? = episodeNumber.toIntOrNull()
         if(episodeNumberInt==null) episodeNumberInt = -1
         val uploadEpisodeRequest = UploadEpisodeRequest(title, episodeNumberInt)
-        api.uploadEpisode("access=" + MyApp.preferences.getToken("token", ""), webtoonId.toString(), uploadEpisodeRequest)
+
+        Log.d("final webtoonId", webtoonId.toString())
+        api.uploadEpisode("access=" + MyApp.preferences.getToken("token", ""),
+            webtoonId.value.toString(),
+            uploadEpisodeRequest)
     }
 
     suspend fun search(search : String){

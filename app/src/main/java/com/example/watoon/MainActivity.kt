@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,6 +18,7 @@ import com.example.watoon.pages.SearchPage
 import com.example.watoon.pages.SignupCompletePage
 import com.example.watoon.pages.WebtoonUploadPage
 import com.example.watoon.ui.theme.WatoonTheme
+import com.example.watoon.viewModel.UploadViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,6 +36,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun SetNavigation() {
     val navController = rememberNavController()
+    val uploadViewModel: UploadViewModel = hiltViewModel()
 
     NavHost(navController = navController, startDestination = NavigationDestination.Login) {
         composable(NavigationDestination.Login) {
@@ -52,16 +55,16 @@ private fun SetNavigation() {
             SignupCompletePage(onEnter = { navController.navigate(it) })
         }
         composable(NavigationDestination.Search){
-            SearchPage(onEnter = {navController.navigate(it)})
+            SearchPage(uploadViewModel, onEnter = {navController.navigate(it)})
         }
         composable(NavigationDestination.WebtoonUpload){
-            WebtoonUploadPage(onEnter = {navController.navigate(it)})
+            WebtoonUploadPage(uploadViewModel, onEnter = {navController.navigate(it)})
         }
         composable(NavigationDestination.EpisodeUpload){
-            EpisodeUploadPage(onEnter = {navController.navigate(it)})
+            EpisodeUploadPage(uploadViewModel, onEnter = {navController.navigate(it)})
         }
         composable(NavigationDestination.NewWebtoon){
-            NewWebtoonPage(onEnter = {navController.navigate(it)})
+            NewWebtoonPage(uploadViewModel, onEnter = {navController.navigate(it)})
         }
     }
 }
