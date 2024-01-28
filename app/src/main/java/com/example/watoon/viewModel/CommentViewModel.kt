@@ -17,6 +17,13 @@ class CommentViewModel @Inject constructor(
     private val _commentList: MutableStateFlow<PagingData<CommentContent>> = MutableStateFlow(value = PagingData.empty())
     val commentList: MutableStateFlow<PagingData<CommentContent>> = _commentList
 
+    private val _recommentList: MutableStateFlow<PagingData<CommentContent>> = MutableStateFlow(value = PagingData.empty())
+    val recommentList: MutableStateFlow<PagingData<CommentContent>> = _recommentList
+
+    var episodeId = 0
+    var commentId = 0
+    var comment : CommentContent? = null
+
     suspend fun getComment(episodeId : String){
         repository.getComment(episodeId).cachedIn(viewModelScope).collect{
             _commentList.value = it
@@ -29,5 +36,15 @@ class CommentViewModel @Inject constructor(
 
     suspend fun uploadComment(episodeId : String, content : String){
         repository.uploadComment(episodeId, content)
+    }
+
+    suspend fun getRecomment(){
+        repository.getRecomment(commentId.toString()).cachedIn(viewModelScope).collect{
+            _recommentList.value = it
+        }
+    }
+
+    suspend fun uploadRecomment(content : String){
+        repository.uploadRecomment(commentId.toString(), content)
     }
 }

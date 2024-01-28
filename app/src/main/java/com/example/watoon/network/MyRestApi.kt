@@ -6,6 +6,7 @@ import com.example.watoon.data.CommentResponse
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.LoginResponse
 import com.example.watoon.data.PasswordResetRequest
+import com.example.watoon.data.RecommentResponse
 import com.example.watoon.data.RegisterRequest
 import com.example.watoon.data.UploadEpisodeRequest
 import com.example.watoon.data.UploadWebtoonRequest
@@ -94,6 +95,19 @@ interface MyRestAPI {
 
     @POST("/api/episode/{id}/comment")
     suspend fun uploadComment(
+        @Header("Cookie") token : String,
+        @Path(value = "id") id : String,
+        @Body data : CommentRequest
+    )
+
+    @GET("/api/comment/{id}/comment")
+    suspend fun getRecomment(
+        @Path(value = "id") id : String,
+        @Query(value = "cursor") cursor : String?
+    ) : RecommentResponse
+
+    @POST("/api/comment/{id}/comment")
+    suspend fun uploadRecomment(
         @Header("Cookie") token : String,
         @Path(value = "id") id : String,
         @Body data : CommentRequest

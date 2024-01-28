@@ -36,7 +36,6 @@ class Repository @Inject constructor(
             pageSize = 10
         ),
         pagingSourceFactory = {
-            Log.d("comment api - repository", "called")
             CommentPagingSource(episodeId = id, api = api)
         }
     ).flow
@@ -48,5 +47,19 @@ class Repository @Inject constructor(
     suspend fun uploadComment(episodeId : String, content : String){
         val commentRequest = CommentRequest(content)
         api.uploadComment("access=" + MyApp.preferences.getToken("token", ""), episodeId, commentRequest)
+    }
+
+    fun getRecomment(id: String) = Pager(
+        config = PagingConfig(
+            pageSize = 10
+        ),
+        pagingSourceFactory = {
+            RecommentPagingSource(episodeId = id, api = api)
+        }
+    ).flow
+
+    suspend fun uploadRecomment(episodeId : String, content : String){
+        val commentRequest = CommentRequest(content)
+        api.uploadRecomment("access=" + MyApp.preferences.getToken("token", ""), episodeId, commentRequest)
     }
 }

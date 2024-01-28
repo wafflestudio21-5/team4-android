@@ -31,10 +31,13 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
         val uploadDaysTrimmed = uploadDays.drop(1)
         val uploadDaysList = uploadDaysTrimmed.map { UploadDays(it) }
 
-        val tags : List<Tags> = mutableListOf()
-        if(tag1 != "") tags.plus(Tags(tag1))
-        if(tag2 != "") tags.plus(Tags(tag2))
-        val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags)
+        var tags : List<Tags> = mutableListOf()
+        if(tag1 != "") tags = tags.plus(Tags(tag1))
+        if(tag2 != "") tags = tags.plus(Tags(tag2))
+        Log.d("tag - viewModel", tags.toString())
+
+        //title image 수정 필요
+        val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags, "")
         api.uploadWebtoon("access=" + MyApp.preferences.getToken("token", ""), uploadWebtoonRequest)
     }
 

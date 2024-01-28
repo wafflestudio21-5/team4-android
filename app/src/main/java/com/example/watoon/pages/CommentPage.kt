@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -78,7 +79,6 @@ fun CommentPage (viewModel: CommentViewModel, onEnter: (String) -> Unit) {
         LaunchedEffect(true) {
             CoroutineScope(Dispatchers.Main).launch {
                 //에피소드 id 수정 필요
-                Log.d("comment api - page", "called")
                 viewModel.getComment("1")
             }
         }
@@ -88,7 +88,7 @@ fun CommentPage (viewModel: CommentViewModel, onEnter: (String) -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(commentList.itemCount/*size*/) { index ->
-                Comment(viewModel, commentList.get(index)!!, onEnter)
+                Comment(true, viewModel, commentList.get(index)!!, onEnter)
             }
         }
 
@@ -122,7 +122,7 @@ fun CommentPage (viewModel: CommentViewModel, onEnter: (String) -> Unit) {
 }
 
 @Composable
-fun Comment(viewModel: CommentViewModel, comment : CommentContent, onEnter: (String) -> Unit){
+fun Comment(isComment: Boolean, viewModel: CommentViewModel, comment : CommentContent, onEnter: (String) -> Unit){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -137,6 +137,7 @@ fun Comment(viewModel: CommentViewModel, comment : CommentContent, onEnter: (Str
         ){
             val context = LocalContext.current
 
+            if(!isComment) Icon(imageVector = Icons.Default.PlayArrow, contentDescription = null)
             Text(comment.createdBy.nickname, fontSize = 14.sp, modifier = Modifier.padding(8.dp))
             Text(comment.dtCreated, color = Color.Gray, fontSize = 8.sp, modifier = Modifier.padding(8.dp))
 
@@ -147,7 +148,8 @@ fun Comment(viewModel: CommentViewModel, comment : CommentContent, onEnter: (Str
                             try {
                                 viewModel.deleteComment(comment.id.toString())
                                 //에피소드 id 추가 필요
-                                viewModel.getComment("1")
+                                if(isComment) viewModel.getComment("1")
+                                else viewModel.getRecomment()
                             } catch (e: HttpException) {
                                 var message = ""
                                 val errorBody = JSONObject(e.response()?.errorBody()?.string())
@@ -171,8 +173,12 @@ fun Comment(viewModel: CommentViewModel, comment : CommentContent, onEnter: (Str
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ){
-            MenuButton(text = "답글") {
-                onEnter(NavigationDestination.Recomment)
+            if(isComment) {
+                MenuButton(text = "답글") {
+                    viewModel.commentId = comment.id
+                    viewModel.comment = comment
+                    onEnter(NavigationDestination.Recomment)
+                }
             }
         }
     }
