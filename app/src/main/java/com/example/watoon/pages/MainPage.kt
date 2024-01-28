@@ -121,6 +121,7 @@ fun makeError(context: Context, e:HttpException){
     errorBody.keys().forEach { key ->
         message += ("$key - ${errorBody.getString(key).substring(2 until errorBody.getString(key).length - 2)}" + "\n")
     }
+    message = message.substring(0, message.length-1)
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 

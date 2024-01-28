@@ -98,16 +98,13 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
         ) {
             items(myWebtoonList) {webtoon ->
                 viewModel.webtoonId = webtoon.id
-                WebtoonItem(webtoon = webtoon, onClick = { onEnter(NavigationDestination.EpisodeUpload) })
+                WebtoonItem(true, webtoon = webtoon, onClick = { onEnter(NavigationDestination.EpisodeUpload) })
             }
             if (isLoading) {
                 item {
                     Text("로딩 중입니다...")
                 }
             }
-            /*items(1){
-                WebtoonItem(webtoon = Webtoon(123, "웹툰1", "24.01.27.", User("a", "a", "a"), "10", false), onClick = { onEnter(NavigationDestination.EpisodeUpload)})
-            }*/
             item{
                 MenuButton(text = "새 웹툰"){
                     onEnter(NavigationDestination.NewWebtoon)
@@ -118,7 +115,7 @@ fun WebtoonUploadPage(onEnter: (String) -> Unit) {
 }
 
 @Composable
-fun WebtoonItem(webtoon: Webtoon, onClick: () -> Unit) {
+fun WebtoonItem(delete: Boolean, webtoon: Webtoon, onClick: () -> Unit) {
     val viewModel: UploadViewModel = hiltViewModel()
 
     Row(modifier = Modifier
@@ -127,23 +124,26 @@ fun WebtoonItem(webtoon: Webtoon, onClick: () -> Unit) {
         val context = LocalContext.current
 
         Text(webtoon.title, textAlign = TextAlign.Center, modifier = Modifier.padding(8.dp))
-        IconButton(
-            onClick = {
-                CoroutineScope(Dispatchers.Main).launch {
-                    try{
-                        viewModel.deleteWebtoon(webtoon.id)
-                    } catch(e : HttpException){
-                        var message = ""
-                        val errorBody = JSONObject(e.response()?.errorBody()?.string())
-                        errorBody.keys().forEach { key ->
-                            message += ("$key - ${errorBody.getString(key)}" + "\n")
+        if(delete) {
+            IconButton(
+                onClick = {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        try {
+                            viewModel.deleteWebtoon(webtoon.id)
+                        } catch (e: HttpException) {
+                            var message = ""
+                            val errorBody = JSONObject(e.response()?.errorBody()?.string())
+                            errorBody.keys().forEach { key ->
+                                message += ("$key - ${errorBody.getString(key)}" + "\n")
+                            }
+                            message = message.substring(0, message.length - 1)
+                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                         }
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                     }
                 }
+            ) {
+                Icon(imageVector = Icons.Default.Clear, contentDescription = null)
             }
-        ) {
-            Icon(imageVector = Icons.Default.Clear, contentDescription = null)
         }
     }
 }

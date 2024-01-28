@@ -78,12 +78,7 @@ fun LoginPage (
                         Toast.makeText(context, "로그인 성공", Toast.LENGTH_LONG).show()
                         onEnter(NavigationDestination.Main)
                     } catch(e : HttpException){
-                        var message = ""
-                        val errorBody = JSONObject(e.response()?.errorBody()?.string())
-                        errorBody.keys().forEach { key ->
-                            message += ("$key - ${errorBody.getString(key).substring(2 until errorBody.getString(key).length - 2)}" + "\n")
-                        }
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                        makeError(context, e)
                     } finally {
                         isLoading = false
                     }

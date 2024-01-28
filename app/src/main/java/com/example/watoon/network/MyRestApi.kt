@@ -65,5 +65,5 @@ interface MyRestAPI {
     suspend fun deleteWebtoon(
         @Header("Cookie") token: String,
         @Path(value = "id") id: String,
-    ) : Object?
+    )
 }

@@ -119,6 +119,7 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
                     errorBody.keys().forEach { key ->
                         message += ("$key - ${errorBody.getString(key)}" + "\n")
                     }
+                    message = message.substring(0, message.length - 1)
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                 } finally {
                     isLoading = false
