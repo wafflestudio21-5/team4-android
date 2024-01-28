@@ -58,6 +58,10 @@ fun MainPageBasic(
                     MenuButton(text = "웹툰 업로드"){
                         onEnter(NavigationDestination.WebtoonUpload)
                     }
+                    //임시 설정
+                    MenuButton(text = "댓글"){
+                        onEnter(NavigationDestination.Comment)
+                    }
                     IconButton(
                         onClick = {
                             onEnter(NavigationDestination.Search)

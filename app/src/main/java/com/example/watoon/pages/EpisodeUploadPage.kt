@@ -38,12 +38,11 @@ import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EpisodeUploadPage(onEnter: (String) -> Unit) {
+fun EpisodeUploadPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
-    val viewModel: UploadViewModel = hiltViewModel()
 
     var episodeTitle by remember { mutableStateOf("") }
-    val episodeNumber by remember { mutableStateOf(0)}
+    var episodeNumber by remember { mutableStateOf("")}
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     val chooseFile = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
         selectedFileUri = uri
@@ -74,13 +73,14 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
             )
         }
         TextField(
-            value = episodeTitle,
-            onValueChange = { episodeTitle = it },
+            value = episodeNumber,
+            onValueChange = { episodeNumber = it },
             label = { Text("화수") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         )
+
         TextField(
             value = episodeTitle,
             onValueChange = { episodeTitle = it },
@@ -89,6 +89,7 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
                 .fillMaxWidth()
                 .padding(8.dp)
         )
+
         Row(
             modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -117,6 +118,7 @@ fun EpisodeUploadPage(onEnter: (String) -> Unit) {
                     errorBody.keys().forEach { key ->
                         message += ("$key - ${errorBody.getString(key)}" + "\n")
                     }
+                    message = message.substring(0, message.length - 1)
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                 } finally {
                     isLoading = false

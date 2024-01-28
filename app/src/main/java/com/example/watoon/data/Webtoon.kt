@@ -9,5 +9,6 @@ data class Webtoon(
     @Json(name = "title") val title:String,
     @Json(name = "releasedDate") val releasedDate:String,
     @Json(name = "author") val author:User,
-    @Json(name = "totalRating") val totalRating:String
+    @Json(name = "totalRating") val totalRating:String,
+    @Json(name = "subscribing") val subscribing:Boolean
 )

@@ -36,7 +36,7 @@ import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewWebtoonPage (onEnter: (String) -> Unit){
+fun NewWebtoonPage (viewModel: UploadViewModel, onEnter: (String) -> Unit){
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var uploadDays by remember { mutableStateOf(listOf("")) }
@@ -44,7 +44,6 @@ fun NewWebtoonPage (onEnter: (String) -> Unit){
     var tag2 by remember { mutableStateOf("") }
 
     var isLoading by remember { mutableStateOf(false) }
-    val viewModel: UploadViewModel = hiltViewModel()
 
     Column (
         modifier = Modifier.padding(8.dp),
@@ -67,7 +66,7 @@ fun NewWebtoonPage (onEnter: (String) -> Unit){
                 Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
             }
             Text(
-                text = "에피소드 업로드",
+                text = "웹툰 업로드",
                 modifier = Modifier.weight(1f)
             )
         }
@@ -160,16 +159,11 @@ fun NewWebtoonPage (onEnter: (String) -> Unit){
                                 title,
                                 description,
                                 uploadDays,
-                                listOf(tag1, tag2)
+                                tag1, tag2
                             )
                             Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
                         } catch (e: HttpException) {
-                            var message = ""
-                            val errorBody = JSONObject(e.response()?.errorBody()?.string())
-                            errorBody.keys().forEach { key ->
-                                message += ("$key - ${errorBody.getString(key)}" + "\n")
-                            }
-                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                            makeError(context, e)
                         } finally {
                             isLoading = false
                         }

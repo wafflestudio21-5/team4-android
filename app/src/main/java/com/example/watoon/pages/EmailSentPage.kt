@@ -84,12 +84,7 @@ fun EmailSentPage (onEnter: (String) -> Unit){
                     viewModel.passwordReset(email)
                     onEnter(NavigationDestination.SignupComplete)
                 } catch(e : HttpException){
-                    var message = ""
-                    val errorBody = JSONObject(e.response()?.errorBody()?.string())
-                    errorBody.keys().forEach { key ->
-                        message += ("$key - ${errorBody.getString(key).substring(2 until errorBody.getString(key).length - 2)}" + "\n")
-                    }
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    makeError(context, e)
                 } finally {
                     isLoading = false
                 }

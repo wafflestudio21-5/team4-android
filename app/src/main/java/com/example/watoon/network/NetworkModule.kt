@@ -19,23 +19,14 @@ class NetworkModule {
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(
+            /*.addInterceptor(
                 HttpLoggingInterceptor {log -> Log.d("okhttp3", "HTTP: $log")}
                     .setLevel(HttpLoggingInterceptor.Level.HEADERS)
-            )
+            )*/
             .addInterceptor(
                 HttpLoggingInterceptor {log -> Log.d("okhttp3", "HTTP: $log")}
                     .setLevel(HttpLoggingInterceptor.Level.BODY)
             )
-            /*.addInterceptor { chain ->
-                val token = "someToken"
-                val newRequest = chain.request()
-                    .newBuilder()
-                    .addHeader("accept", "application/json")
-                    .addHeader("Authorization", "Bearer $token")
-                    .build()
-                chain.proceed(newRequest)
-            }*/
             .connectTimeout(100, TimeUnit.SECONDS)
             .readTimeout(100,TimeUnit.SECONDS)
             .writeTimeout(100,TimeUnit.SECONDS)

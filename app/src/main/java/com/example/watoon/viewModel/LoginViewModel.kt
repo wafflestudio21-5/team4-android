@@ -32,4 +32,35 @@ class LoginViewModel @Inject constructor(private var api : MyRestAPI) : ViewMode
         api.passwordReset(passwordRequest)
     }
 
+    /*
+    val loginRequest = LoginRequest(email, pw)
+
+        val loginResponse = api.login(loginRequest)
+        val token = loginResponse.access
+
+        val body = loginResponse.body()
+        if(body!=null) {
+            val id = body.user.id
+            MyApp.preferences.setToken("id", id.toString())
+        }
+
+        if (!loginResponse.isSuccessful) {
+            val errorBody = body.toString()
+
+           throw HttpException(Response.error<LoginResponse>(400 ,
+               ResponseBody.create(
+                   "plain/text".toMediaTypeOrNull(), // Specify the media type as needed
+                   errorBody // Set your custom error message here
+               )
+            ))
+        }
+
+        val headers = loginResponse.headers().values("Set-Cookie")
+        Log.d("headers", headers.toString())
+        val tokens = headers?.map { it.substringBefore(';').trim() } ?: emptyList()
+        val token = tokens.joinToString { "; " }
+        MyApp.preferences.setToken("token", token)
+        val id = loginResponse.user.id
+        MyApp.preferences.setToken("id", id.toString())
+     */
 }

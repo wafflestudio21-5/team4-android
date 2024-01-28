@@ -5,7 +5,15 @@ import com.squareup.moshi.Json
 data class UploadWebtoonRequest(
     @Json(name = "title") val title : String,
     @Json(name = "description") val description : String,
-    @Json(name = "uploadDays") val uploadDays : List<String>,
-    @Json(name = "tags") val tags : List<String>,
+    @Json(name = "uploadDays") val uploadDays : List<UploadDays>,
+    @Json(name = "tags") val tags : List<Tags>,
 ){
 }
+
+data class UploadDays(
+    @Json(name = "name") val name : String
+){}
+
+data class Tags(
+    @Json(name = "content") val content : String
+){}
