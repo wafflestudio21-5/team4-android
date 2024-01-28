@@ -10,5 +10,6 @@ object NavigationDestination {
     const val WebtoonUpload = "WebtoonUpload"
     const val EpisodeUpload = "EpisodeUpload"
     const val NewWebtoon = "NewWebtoon"
+    const val WebtoonMain = "WebtoonMain"
     const val Comment = "Comment"
 }

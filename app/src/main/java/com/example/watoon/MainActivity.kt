@@ -4,10 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.watoon.pages.CommentPage
 import com.example.watoon.pages.CreateAccountPage
 import com.example.watoon.pages.EmailSentPage
@@ -17,6 +20,7 @@ import com.example.watoon.pages.MainPageBasic
 import com.example.watoon.pages.NewWebtoonPage
 import com.example.watoon.pages.SearchPage
 import com.example.watoon.pages.SignupCompletePage
+import com.example.watoon.pages.WebtoonMainPage
 import com.example.watoon.pages.WebtoonUploadPage
 import com.example.watoon.ui.theme.WatoonTheme
 import com.example.watoon.viewModel.CommentViewModel
@@ -46,7 +50,19 @@ private fun SetNavigation() {
             LoginPage(onEnter = { navController.navigate(it) })
         }
         composable(NavigationDestination.Main) {
-            MainPageBasic(onEnter = { navController.navigate(it) })
+            MainPageBasic(
+                onEnter = { navController.navigate(it) },
+                toWebtoonMain = { navController.navigate("${NavigationDestination.WebtoonMain}/${it.id}")}
+            )
+        }
+        composable(
+            "${NavigationDestination.WebtoonMain}/{webtoonId}",
+            arguments = listOf(navArgument("webtoonId"){type = NavType.IntType})
+        ){
+            WebtoonMainPage(
+                webtoonId = it.arguments?.getInt("webtoonId")?:1,
+                onEnter = { navController.navigate(it) }
+            )
         }
         composable(NavigationDestination.CreateAccount) {
             CreateAccountPage(onEnter = { navController.navigate(it) })

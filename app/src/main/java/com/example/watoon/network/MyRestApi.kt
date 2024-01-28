@@ -1,5 +1,6 @@
 package com.example.watoon.network
 
+import com.example.watoon.data.EpisodeListRequest
 import com.example.watoon.data.CommentResponse
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.LoginResponse
@@ -8,13 +9,13 @@ import com.example.watoon.data.RegisterRequest
 import com.example.watoon.data.UploadEpisodeRequest
 import com.example.watoon.data.UploadWebtoonRequest
 import com.example.watoon.data.Webtoon
+import com.example.watoon.data.WebtoonDetailRequest
 import com.example.watoon.data.WebtoonListRequset
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -52,9 +53,20 @@ interface MyRestAPI {
 
     @GET("/api/webtoonList/{list_type}")
     suspend fun getWebtoonList(
-        @Path(value = "list_type") type: String,
-        @Query(value = "cursor") cursor: String?
-    ): WebtoonListRequset
+        @Path(value = "list_type") type:String,
+        @Query(value = "cursor") cursor:String?
+    ):WebtoonListRequset
+
+    @GET("/api/webtoon/{id}/episode")
+    suspend fun getEpisodeList(
+        @Path(value = "id") id: String,
+        @Query(value = "cursor") cursor:String?
+    ):EpisodeListRequest
+
+    @GET("/api/webtoon/{id}")
+    suspend fun getWebtoonInfo(
+        @Path(value = "id") id:String
+    ):WebtoonDetailRequest
 
     @GET("/api/webtoonList/search")
     suspend fun search(

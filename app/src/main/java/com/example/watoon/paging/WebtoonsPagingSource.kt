@@ -6,7 +6,7 @@ import com.example.watoon.data.Webtoon
 import com.example.watoon.network.MyRestAPI
 import java.lang.Exception
 
-class PagingSource(
+class WebtoonsPagingSource(
     val type : String,
     private var api : MyRestAPI
 ):PagingSource<String, Webtoon>() {
