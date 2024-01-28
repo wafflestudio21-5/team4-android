@@ -20,7 +20,6 @@ import javax.inject.Inject
 class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewModel() {
     val myWebtoonList: MutableStateFlow<List<Webtoon>> = MutableStateFlow(listOf())
     var webtoonId: MutableStateFlow<Int> = MutableStateFlow(0)
-
     val searchWebtoonList: MutableStateFlow<List<Webtoon>> = MutableStateFlow(listOf())
 
     suspend fun loadMyWebtoon() {

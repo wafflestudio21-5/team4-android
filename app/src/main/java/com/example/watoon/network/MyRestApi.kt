@@ -1,5 +1,6 @@
 package com.example.watoon.network
 
+import com.example.watoon.data.CommentResponse
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.LoginResponse
 import com.example.watoon.data.PasswordResetRequest
@@ -49,7 +50,6 @@ interface MyRestAPI {
         @Body data: UploadEpisodeRequest
     )
 
-
     @GET("/api/webtoonList/{list_type}")
     suspend fun getWebtoonList(
         @Path(value = "list_type") type: String,
@@ -63,6 +63,18 @@ interface MyRestAPI {
 
     @DELETE("/api/webtoon/{id}")
     suspend fun deleteWebtoon(
+        @Header("Cookie") token: String,
+        @Path(value = "id") id: String,
+    )
+
+    @GET("/api/episode/{id}/comment")
+    suspend fun getComment(
+        @Path(value = "id") id: String,
+        @Query(value = "cursor") cursor: String?
+    ) : CommentResponse
+
+    @DELETE("/api/comment/{id}")
+    suspend fun deleteComment(
         @Header("Cookie") token: String,
         @Path(value = "id") id: String,
     )

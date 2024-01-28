@@ -8,6 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.watoon.pages.CommentPage
 import com.example.watoon.pages.CreateAccountPage
 import com.example.watoon.pages.EmailSentPage
 import com.example.watoon.pages.EpisodeUploadPage
@@ -18,6 +19,7 @@ import com.example.watoon.pages.SearchPage
 import com.example.watoon.pages.SignupCompletePage
 import com.example.watoon.pages.WebtoonUploadPage
 import com.example.watoon.ui.theme.WatoonTheme
+import com.example.watoon.viewModel.CommentViewModel
 import com.example.watoon.viewModel.UploadViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,6 +39,7 @@ class MainActivity : ComponentActivity() {
 private fun SetNavigation() {
     val navController = rememberNavController()
     val uploadViewModel: UploadViewModel = hiltViewModel()
+    val commentViewModel: CommentViewModel = hiltViewModel()
 
     NavHost(navController = navController, startDestination = NavigationDestination.Login) {
         composable(NavigationDestination.Login) {
@@ -65,6 +68,9 @@ private fun SetNavigation() {
         }
         composable(NavigationDestination.NewWebtoon){
             NewWebtoonPage(uploadViewModel, onEnter = {navController.navigate(it)})
+        }
+        composable(NavigationDestination.Comment){
+            CommentPage(commentViewModel, onEnter = {navController.navigate(it)})
         }
     }
 }

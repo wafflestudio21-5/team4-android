@@ -85,7 +85,7 @@ fun SearchPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
         ) {
             items(searchWebtoonList) {webtoon ->
                 //webtoonMain 이동 수정 필요
-                WebtoonItem(false, webtoon = webtoon, onClick = { onEnter(NavigationDestination.EpisodeUpload) })
+                WebtoonItem(viewModel, false, webtoon = webtoon, onClick = { onEnter(NavigationDestination.EpisodeUpload) })
             }
             if (isLoading) {
                 item {

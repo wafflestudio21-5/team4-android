@@ -3,8 +3,6 @@ package com.example.watoon.pages
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,9 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.watoon.NavigationDestination
-import com.example.watoon.data.User
 import com.example.watoon.data.Webtoon
 import com.example.watoon.viewModel.UploadViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -97,7 +93,7 @@ fun WebtoonUploadPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(myWebtoonList) {webtoon ->
-                WebtoonItem(true, webtoon = webtoon, onClick = {
+                WebtoonItem(viewModel, true, webtoon = webtoon, onClick = {
                     viewModel.webtoonId.value = webtoon.id
                     onEnter(NavigationDestination.EpisodeUpload) })
             }
@@ -116,8 +112,7 @@ fun WebtoonUploadPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
 }
 
 @Composable
-fun WebtoonItem(delete: Boolean, webtoon: Webtoon, onClick: () -> Unit) {
-    val viewModel: UploadViewModel = hiltViewModel()
+fun WebtoonItem(viewModel: UploadViewModel, delete: Boolean, webtoon: Webtoon, onClick: () -> Unit) {
 
     Row(modifier = Modifier
         .fillMaxWidth()
