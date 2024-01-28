@@ -32,6 +32,7 @@ import com.example.watoon.NavigationDestination
 import com.example.watoon.viewModel.WebtoonsViewModel
 import com.example.watoon.data.User
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.translate
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.HttpException
@@ -52,7 +53,6 @@ fun MainPage(
     var listNum by remember { mutableIntStateOf(calendar.get(Calendar.DAY_OF_WEEK)-1) }
 
     val apiListNames = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "finished")
-    val appListNames = arrayOf("일", "월", "화", "수", "목", "금", "토", "완결")
 
     val rowNum = 1 + (webtoonList.itemCount-1)/3
     val context = LocalContext.current
@@ -79,7 +79,7 @@ fun MainPage(
                     ){
                         for(i in 0..7){
                             Text(
-                                text= appListNames[i],
+                                text= translate(apiListNames[i]),
                                 color = if(i==listNum) Color.Green else Color.White,
                                 modifier = Modifier
                                     .clickable {
@@ -135,7 +135,7 @@ fun RowOfWebtoon(
     val emptyWebtoon = Webtoon(
         id = 0, title = " ", releasedDate = " ", totalRating = " ",
         author = User(
-            nickname = " ", email = " ", password = null
+            nickname = " ", email = " ", password = " "
         )
     )
     val emptyFunc : (Webtoon)->Unit = {}

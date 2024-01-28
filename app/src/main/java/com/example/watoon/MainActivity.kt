@@ -55,6 +55,7 @@ private fun SetNavigation() {
         ){
             WebtoonMainPage(
                 webtoonId = it.arguments?.getInt("webtoonId")?:1,
+                onEnter = { navController.navigate(it) }
             )
         }
         composable(NavigationDestination.CreateAccount) {

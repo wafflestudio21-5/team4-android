@@ -8,11 +8,11 @@ import com.example.watoon.data.RegisterRequest
 import com.example.watoon.data.UploadEpisodeRequest
 import com.example.watoon.data.UploadWebtoonRequest
 import com.example.watoon.data.Webtoon
+import com.example.watoon.data.WebtoonDetailRequest
 import com.example.watoon.data.WebtoonListRequset
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -60,4 +60,9 @@ interface MyRestAPI {
         @Path(value = "id") id: String,
         @Query(value = "cursor") cursor:String?
     ):EpisodeListRequest
+
+    @GET("/api/webtoon/{id}")
+    suspend fun getWebtoonInfo(
+        @Path(value = "id") id:String
+    ):WebtoonDetailRequest
 }
