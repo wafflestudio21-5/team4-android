@@ -16,9 +16,12 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.watoon.MyApp
 import com.example.watoon.NavigationDestination
@@ -45,18 +47,12 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.HttpException
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentPage (viewModel: CommentViewModel, onEnter: (String) -> Unit) {
-    //val commentList = viewModel.commentList.collectAsLazyPagingItems()
-    val commentList = listOf(
-        CommentContent(100, "정말 재미있어요!", "240128", "240128",
-            UserInfo(0, "하늘"), "0", "0", "0"
-        ),
-        CommentContent(101, "노잼임", "240127", "240128",
-        UserInfo(5, "풀"), "0", "0", "0"
-    )
-    )
-    var isLoading by remember { mutableStateOf(false) }
+    val commentList = viewModel.commentList.collectAsLazyPagingItems()
+
+    var content by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -77,30 +73,56 @@ fun CommentPage (viewModel: CommentViewModel, onEnter: (String) -> Unit) {
             ) {
                 Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
             }
+            Text("댓글")
         }
 
         LaunchedEffect(true) {
             CoroutineScope(Dispatchers.Main).launch {
-                //웹툰id 수정 필요
-                viewModel.getComment("26")
+                //에피소드 id 수정 필요
+                viewModel.getComment("1")
             }
         }
 
         LazyColumn(
+            modifier = Modifier.fillMaxWidth().padding(8.dp).weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(commentList.itemCount/*size*/) { index ->
+                Comment(true, viewModel, commentList.get(index)!!, onEnter)
+            }
+        }
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            items(commentList./*itemCount*/size) { index ->
-                Comment(viewModel, commentList.get(index)!!)
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            TextField(
+                value = content,
+                onValueChange = { content = it },
+                label = { Text("댓글을 입력해주세요:)") },
+                modifier = Modifier.padding(8.dp).weight(8f)
+            )
+            MenuButton(text = "등록") {
+                CoroutineScope(Dispatchers.Main).launch {
+                    try {
+                        //에피소드 id 수정 필요
+                        viewModel.uploadComment("1", content)
+                        Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
+                        content = ""
+                        viewModel.getComment("1")
+                    } catch(e : HttpException){
+                        makeError(context, e)
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun Comment(viewModel: CommentViewModel, comment : CommentContent){
+fun Comment(isComment: Boolean, viewModel: CommentViewModel, comment : CommentContent, onEnter: (String) -> Unit){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -109,13 +131,15 @@ fun Comment(viewModel: CommentViewModel, comment : CommentContent){
         val myComment = (MyApp.preferences.getToken("id", "") == comment.createdBy.id.toString())
 
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+            //horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         ){
             val context = LocalContext.current
 
-            Text(comment.createdBy.nickname, color = Color.Gray, fontSize = 14.sp,)
+            if(!isComment) Icon(imageVector = Icons.Default.PlayArrow, contentDescription = null)
+            Text(comment.createdBy.nickname, fontSize = 14.sp, modifier = Modifier.padding(8.dp))
+            Text(comment.dtCreated, color = Color.Gray, fontSize = 8.sp, modifier = Modifier.padding(8.dp))
 
             if(myComment){
                 IconButton(
@@ -123,7 +147,9 @@ fun Comment(viewModel: CommentViewModel, comment : CommentContent){
                         CoroutineScope(Dispatchers.Main).launch {
                             try {
                                 viewModel.deleteComment(comment.id.toString())
-                                Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
+                                //에피소드 id 추가 필요
+                                if(isComment) viewModel.getComment("1")
+                                else viewModel.getRecomment()
                             } catch (e: HttpException) {
                                 var message = ""
                                 val errorBody = JSONObject(e.response()?.errorBody()?.string())
@@ -142,6 +168,18 @@ fun Comment(viewModel: CommentViewModel, comment : CommentContent){
             }
         }
         Text(comment.content, fontSize = 13.sp, modifier = Modifier.padding(vertical = 14.dp))
-        Text(comment.dtCreated, color = Color.Gray, fontSize = 8.sp, modifier = Modifier.align(Alignment.End))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ){
+            if(isComment) {
+                MenuButton(text = "답글") {
+                    viewModel.commentId = comment.id
+                    viewModel.comment = comment
+                    onEnter(NavigationDestination.Recomment)
+                }
+            }
+        }
     }
 }

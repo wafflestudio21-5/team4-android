@@ -20,6 +20,7 @@ import com.example.watoon.pages.EpisodeUploadPage
 import com.example.watoon.pages.LoginPage
 import com.example.watoon.pages.MainPageBasic
 import com.example.watoon.pages.NewWebtoonPage
+import com.example.watoon.pages.RecommentPage
 import com.example.watoon.pages.SearchPage
 import com.example.watoon.pages.SignupCompletePage
 import com.example.watoon.pages.WebtoonMainPage
@@ -103,6 +104,9 @@ private fun SetNavigation() {
         }
         composable(NavigationDestination.Comment){
             CommentPage(commentViewModel, onEnter = {navController.navigate(it)})
+        }
+        composable(NavigationDestination.Recomment){
+            RecommentPage(commentViewModel, onEnter = {navController.navigate(it)})
         }
     }
 }

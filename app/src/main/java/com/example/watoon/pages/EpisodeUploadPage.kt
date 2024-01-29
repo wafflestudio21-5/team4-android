@@ -112,14 +112,10 @@ fun EpisodeUploadPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
                 try {
                     viewModel.uploadEpisode(episodeTitle, episodeNumber)
                     Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
+                    episodeTitle = ""
+                    episodeNumber = ""
                 } catch (e: HttpException) {
-                    var message = ""
-                    val errorBody = JSONObject(e.response()?.errorBody()?.string())
-                    errorBody.keys().forEach { key ->
-                        message += ("$key - ${errorBody.getString(key)}" + "\n")
-                    }
-                    message = message.substring(0, message.length - 1)
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    makeError(context, e)
                 } finally {
                     isLoading = false
                 }
