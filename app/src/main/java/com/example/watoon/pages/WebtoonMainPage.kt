@@ -1,6 +1,7 @@
 package com.example.watoon.pages
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -27,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -44,7 +42,8 @@ import retrofit2.HttpException
 @Composable
 fun WebtoonMainPage(
     webtoonId : Int,
-    onEnter: (String) -> Unit
+    onEnter: (String) -> Unit,
+    toEpisode: (Episode) -> Unit
 ) {
     val viewModel: WebtoonMainViewModel = hiltViewModel()
     val episodeList = viewModel.episodeList.collectAsLazyPagingItems()
@@ -54,13 +53,14 @@ fun WebtoonMainPage(
     
     LaunchedEffect(true){
         try {
-            println(webtoonId)
             viewModel.getWebtoonInfo(webtoonId.toString())
             viewModel.getEpisodeList(webtoonId.toString())
         } catch (e: HttpException) {
             makeError(context, e)
         }
     }
+
+
     Column(
         modifier = Modifier.padding(horizontal = 10.dp)
     ) {
@@ -82,7 +82,7 @@ fun WebtoonMainPage(
         LazyColumn{
             items(episodeList.itemSnapshotList){
                 if (it != null) {
-                    EpisodeItem(it)
+                    EpisodeItem(it, toEpisode)
                 }
             }
         }
@@ -135,6 +135,11 @@ fun dayOfWeek(days:List<DayOfWeek>):String{
 }
 
 @Composable
-fun EpisodeItem(episode:Episode){
-    Text(episode.title)
+fun EpisodeItem(episode:Episode, toEpisode: (Episode) -> Unit){
+    Row(
+        modifier = Modifier
+            .clickable { toEpisode(episode) }
+    ){
+        Text(episode.title)
+    }
 }

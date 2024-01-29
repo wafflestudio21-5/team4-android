@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -14,6 +15,7 @@ import androidx.navigation.navArgument
 import com.example.watoon.pages.CommentPage
 import com.example.watoon.pages.CreateAccountPage
 import com.example.watoon.pages.EmailSentPage
+import com.example.watoon.pages.EpisodePage
 import com.example.watoon.pages.EpisodeUploadPage
 import com.example.watoon.pages.LoginPage
 import com.example.watoon.pages.MainPageBasic
@@ -61,7 +63,17 @@ private fun SetNavigation() {
         ){
             WebtoonMainPage(
                 webtoonId = it.arguments?.getInt("webtoonId")?:1,
-                onEnter = { navController.navigate(it) }
+                onEnter = { navController.navigate(it) },
+                toEpisode = { navController.navigate("${NavigationDestination.Episode}/${it.id}")}
+            )
+        }
+        composable(
+            "${NavigationDestination.Episode}/{episodeId}",
+            arguments = listOf(navArgument("episodeId"){type = NavType.IntType})
+        ){
+            EpisodePage(
+                episodeId = it.arguments?.getInt("episodeId")?:1,
+                toWebtoonMain = { navController.navigate("${NavigationDestination.WebtoonMain}/${it.id}")}
             )
         }
         composable(NavigationDestination.CreateAccount) {
@@ -74,7 +86,11 @@ private fun SetNavigation() {
             SignupCompletePage(onEnter = { navController.navigate(it) })
         }
         composable(NavigationDestination.Search){
-            SearchPage(uploadViewModel, onEnter = {navController.navigate(it)})
+            SearchPage(
+                viewModel = uploadViewModel,
+                onEnter = {navController.navigate(it)},
+                toWebtoonMain = { navController.navigate("${NavigationDestination.WebtoonMain}/${it.id}")}
+            )
         }
         composable(NavigationDestination.WebtoonUpload){
             WebtoonUploadPage(uploadViewModel, onEnter = {navController.navigate(it)})

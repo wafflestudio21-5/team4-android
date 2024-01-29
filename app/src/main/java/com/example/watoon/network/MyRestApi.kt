@@ -2,6 +2,7 @@ package com.example.watoon.network
 
 import com.example.watoon.data.EpisodeListRequest
 import com.example.watoon.data.CommentResponse
+import com.example.watoon.data.EpisodeContent
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.LoginResponse
 import com.example.watoon.data.PasswordResetRequest
@@ -90,4 +91,9 @@ interface MyRestAPI {
         @Header("Cookie") token: String,
         @Path(value = "id") id: String,
     )
+
+    @GET("/api/episode/{id}")
+    suspend fun getEpisodeInfo(
+        @Path(value = "id") id:String
+    ): EpisodeContent
 }

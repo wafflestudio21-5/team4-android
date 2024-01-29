@@ -127,10 +127,10 @@ fun RowOfWebtoon(
     toWebtoonMain : (Webtoon) -> Unit
 ){
     val emptyWebtoon = Webtoon(
-        id = 0, title = " ", releasedDate = " ", totalRating = " ",
+        id = 0, title = "", releasedDate = "", totalRating = "",
         author = User(
-            nickname = " ", email = " ", password = " "
-        ), subscribing = false
+            nickname = "", email = "", password = ""
+        ), subscribing = false, titleImage = ""
     )
     val emptyFunc : (Webtoon)->Unit = {}
 
