@@ -1,5 +1,6 @@
 package com.example.watoon.pages
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -24,9 +25,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
+import com.example.watoon.data.Webtoon
 import com.example.watoon.viewModel.UploadViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +38,11 @@ import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
+fun SearchPage(
+    viewModel: UploadViewModel,
+    onEnter: (String) -> Unit,
+    toWebtoonMain : (Webtoon) -> Unit
+) {
     var keyword by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     val searchWebtoonList by viewModel.searchWebtoonList.collectAsState()
@@ -83,9 +90,8 @@ fun SearchPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
                 .padding(top = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(searchWebtoonList) {webtoon ->
-                //webtoonMain 이동 수정 필요
-                WebtoonItem(viewModel, false, webtoon = webtoon, onClick = { onEnter(NavigationDestination.EpisodeUpload) })
+            items(searchWebtoonList) {
+                SearchWebtoonItem(webtoon = it, toWebtoonMain = toWebtoonMain)
             }
             if (isLoading) {
                 item {
@@ -93,5 +99,16 @@ fun SearchPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
                 }
             }
         }
+    }
+}
+@Composable
+fun SearchWebtoonItem(
+    webtoon: Webtoon,
+    toWebtoonMain : (Webtoon) -> Unit
+){
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable { toWebtoonMain(webtoon) }){
+        Text(webtoon.title, textAlign = TextAlign.Center, modifier = Modifier.padding(8.dp))
     }
 }

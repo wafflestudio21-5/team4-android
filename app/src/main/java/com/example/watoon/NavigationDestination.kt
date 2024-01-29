@@ -13,4 +13,5 @@ object NavigationDestination {
     const val WebtoonMain = "WebtoonMain"
     const val Comment = "Comment"
     const val Recomment = "Recomment"
+    const val Episode = "Episode"
 }

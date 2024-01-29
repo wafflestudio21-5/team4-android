@@ -28,7 +28,7 @@ class WebtoonMainViewModel @Inject constructor(
     }
 
     suspend fun getEpisodeList(webtoonId:String){
-        repository.getEpisode(webtoonId).cachedIn(viewModelScope).collect(){
+        repository.getEpisode(webtoonId).cachedIn(viewModelScope).collect{
             episodeList.value = it
         }
     }
