@@ -28,8 +28,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
+import com.example.watoon.function.MenuButton
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.UploadViewModel
+import com.example.watoon.viewModel.WebtoonsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,7 +40,7 @@ import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewWebtoonPage (viewModel: UploadViewModel, onEnter: (String) -> Unit){
+fun NewWebtoonPage (viewModel:UploadViewModel,onEnter: (String) -> Unit){
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var uploadDays by remember { mutableStateOf(listOf("")) }

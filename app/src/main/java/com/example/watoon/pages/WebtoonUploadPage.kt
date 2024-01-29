@@ -31,7 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.UploadViewModel
+import com.example.watoon.viewModel.WebtoonsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,7 +41,7 @@ import org.json.JSONObject
 import retrofit2.HttpException
 
 @Composable
-fun WebtoonUploadPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
+fun WebtoonUploadPage(viewModel:UploadViewModel, onEnter: (String) -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
 
     val myWebtoonList by viewModel.myWebtoonList.collectAsState()
@@ -74,12 +76,7 @@ fun WebtoonUploadPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
                     isLoading = true
                     viewModel.loadMyWebtoon()
                 } catch(e : HttpException){
-                    var message = ""
-                    val errorBody = JSONObject(e.response()?.errorBody()?.string())
-                    errorBody.keys().forEach { key ->
-                        message += ("$key - ${errorBody.getString(key)}" + "\n")
-                    }
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    makeError(context, e)
                 } finally{
                     isLoading = false
                 }
@@ -103,7 +100,7 @@ fun WebtoonUploadPage(viewModel: UploadViewModel, onEnter: (String) -> Unit) {
                 }
             }
             item{
-                MenuButton(text = "새 웹툰"){
+                LoginButton(text = "새 웹툰"){
                     onEnter(NavigationDestination.NewWebtoon)
                 }
             }

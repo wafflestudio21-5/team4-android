@@ -43,7 +43,7 @@ fun UserPage() {
                     ){
                         Text(
                             text = "관심 웹툰",
-                            color = Color.White,
+                            color = Color.Black,
                             modifier = Modifier
                                 .clickable {
                                     isComment = false
@@ -51,7 +51,7 @@ fun UserPage() {
                         )
                         Text(
                             text= "댓글",
-                            color = Color.White,
+                            color = Color.Black,
                             modifier = Modifier
                                 .clickable {
                                     isComment = true
@@ -59,10 +59,8 @@ fun UserPage() {
                         )
                     }
                 },
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Black)
             )
         }
-        ,containerColor = Color.Black
     ){
         LazyColumn(
             //padding 방법 추가 고려 필요

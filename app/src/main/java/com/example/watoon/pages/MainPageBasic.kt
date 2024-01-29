@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Face
@@ -33,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.watoon.NavigationDestination
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.MenuButton
 
 import com.example.watoon.ui.theme.WatoonTheme
 
@@ -50,6 +53,7 @@ fun MainPageBasic(
         topBar = {
             // TopBar content
             TopAppBar(
+                modifier = Modifier.height(50.dp),
                 colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Gray),
                 title = {
                     Text(text = " ")
@@ -57,10 +61,6 @@ fun MainPageBasic(
                 actions = {
                     MenuButton(text = "웹툰 업로드"){
                         onEnter(NavigationDestination.WebtoonUpload)
-                    }
-                    //임시 설정
-                    MenuButton(text = "댓글"){
-                        onEnter(NavigationDestination.Comment)
                     }
                     IconButton(
                         onClick = {
@@ -74,6 +74,7 @@ fun MainPageBasic(
         },
         bottomBar = {
             BottomAppBar (
+                modifier = Modifier.height(50.dp),
                 containerColor = Color.Gray,
                 actions = {
                     Row(
@@ -123,7 +124,7 @@ fun MainPageBasic(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 60.dp, bottom = 60.dp)
+                .padding(top = 50.dp, bottom = 50.dp)
         ) {
             if(showMainPage){
                 MainPage(toWebtoonMain)

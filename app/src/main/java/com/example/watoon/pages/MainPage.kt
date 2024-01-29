@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +23,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -76,12 +78,13 @@ fun MainPage(
                 actions = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
                     ){
                         for(i in 0..7){
                             Text(
                                 text= translate(apiListNames[i]),
-                                color = if(i==listNum) Color.Green else Color.White,
+                                color = if(i==listNum) Color.Green else Color.Black,
                                 modifier = Modifier
                                     .clickable {
                                         listNum = i
@@ -97,11 +100,9 @@ fun MainPage(
                             )
                         }
                     }
-                },
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Black)
+                }
             )
         }
-        , containerColor = Color.Black
     ){
         LazyColumn(
             //padding 방법 추가 고려 필요
@@ -159,7 +160,7 @@ fun Webtoon(webtoon: Webtoon, toWebtoonMain : (Webtoon) -> Unit) {
     ) {
         Text(
             text = webtoon.title,
-            color = Color.White
+            color = Color.Black
         )
     }
 }

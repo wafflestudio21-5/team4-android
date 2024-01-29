@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
 import com.example.watoon.R
+import com.example.watoon.data.EpisodeContent
 import com.example.watoon.data.Webtoon
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.EpisodeViewModel
@@ -52,10 +53,11 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun EpisodePage(
+    viewModel: EpisodeViewModel,
     episodeId : Int,
-    toWebtoonMain : (Webtoon) -> Unit
+    toWebtoonMain : (Webtoon) -> Unit,
+    onEnter : (String) -> Unit
 ) {
-    val viewModel:EpisodeViewModel = hiltViewModel()
     val episodeContent = viewModel.episodeInfo.collectAsState().value
 
     val scope = rememberCoroutineScope()
@@ -114,6 +116,7 @@ fun EpisodePage(
                             modifier = Modifier
                                 .size(30.dp)
                                 .clickable {
+                                    onEnter(NavigationDestination.Comment)
                                 },
                             colorFilter = ColorFilter.tint(Color.Black)
                         )

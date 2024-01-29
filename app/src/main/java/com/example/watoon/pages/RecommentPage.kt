@@ -1,6 +1,5 @@
 package com.example.watoon.pages
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,9 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,19 +27,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.watoon.MyApp
 import com.example.watoon.NavigationDestination
-import com.example.watoon.viewModel.CommentViewModel
+import com.example.watoon.function.MenuButton
+import com.example.watoon.function.makeError
+import com.example.watoon.viewModel.EpisodeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RecommentPage (viewModel: CommentViewModel, onEnter: (String) -> Unit) {
+fun RecommentPage (viewModel: EpisodeViewModel,onEnter: (String) -> Unit) {
     val commentList = viewModel.recommentList.collectAsLazyPagingItems()
     var content by remember { mutableStateOf("") }
 

@@ -28,9 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import com.example.watoon.NavigationDestination
 import com.example.watoon.data.Webtoon
 import com.example.watoon.viewModel.UploadViewModel
+import com.example.watoon.viewModel.WebtoonsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,10 +41,11 @@ import retrofit2.HttpException
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchPage(
-    viewModel: UploadViewModel,
+    viewModel:UploadViewModel,
     onEnter: (String) -> Unit,
     toWebtoonMain : (Webtoon) -> Unit
 ) {
+
     var keyword by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     val searchWebtoonList by viewModel.searchWebtoonList.collectAsState()

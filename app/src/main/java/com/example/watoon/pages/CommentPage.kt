@@ -1,6 +1,5 @@
 package com.example.watoon.pages
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,13 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,7 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,12 +29,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.watoon.MyApp
 import com.example.watoon.NavigationDestination
 import com.example.watoon.data.CommentContent
-import com.example.watoon.data.UserInfo
-import com.example.watoon.viewModel.CommentViewModel
+import com.example.watoon.data.Episode
+import com.example.watoon.data.EpisodeContent
+import com.example.watoon.function.MenuButton
+import com.example.watoon.function.makeError
+import com.example.watoon.viewModel.EpisodeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,16 +47,27 @@ import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentPage (viewModel: CommentViewModel, onEnter: (String) -> Unit) {
+fun CommentPage (
+    viewModel: EpisodeViewModel,
+    onEnter: (String) -> Unit,
+    toEpisode : (EpisodeContent) -> Unit
+    ) {
     val commentList = viewModel.commentList.collectAsLazyPagingItems()
+    val context = LocalContext.current
 
     var content by remember { mutableStateOf("") }
+
+    LaunchedEffect(true){
+        try {
+            viewModel.getComment()
+        }catch (e:HttpException){
+            makeError(context, e)
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        val context = LocalContext.current
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -67,20 +76,12 @@ fun CommentPage (viewModel: CommentViewModel, onEnter: (String) -> Unit) {
         ) {
             IconButton(
                 onClick = {
-                    //목적지 수정 필요
-                    onEnter(NavigationDestination.Main)
+                    toEpisode(viewModel.episodeInfo.value)
                 }
             ) {
                 Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
             }
             Text("댓글")
-        }
-
-        LaunchedEffect(true) {
-            CoroutineScope(Dispatchers.Main).launch {
-                //에피소드 id 수정 필요
-                viewModel.getComment("1")
-            }
         }
 
         LazyColumn(
@@ -107,11 +108,10 @@ fun CommentPage (viewModel: CommentViewModel, onEnter: (String) -> Unit) {
             MenuButton(text = "등록") {
                 CoroutineScope(Dispatchers.Main).launch {
                     try {
-                        //에피소드 id 수정 필요
-                        viewModel.uploadComment("1", content)
+                        viewModel.uploadComment(content)
                         Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
                         content = ""
-                        viewModel.getComment("1")
+                        viewModel.getComment()
                     } catch(e : HttpException){
                         makeError(context, e)
                     }
@@ -122,7 +122,10 @@ fun CommentPage (viewModel: CommentViewModel, onEnter: (String) -> Unit) {
 }
 
 @Composable
-fun Comment(isComment: Boolean, viewModel: CommentViewModel, comment : CommentContent, onEnter: (String) -> Unit){
+fun Comment(isComment: Boolean, viewModel: EpisodeViewModel, comment : CommentContent, onEnter: (String) -> Unit){
+
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -135,7 +138,7 @@ fun Comment(isComment: Boolean, viewModel: CommentViewModel, comment : CommentCo
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         ){
-            val context = LocalContext.current
+
 
             if(!isComment) Icon(imageVector = Icons.Default.PlayArrow, contentDescription = null)
             Text(comment.createdBy.nickname, fontSize = 14.sp, modifier = Modifier.padding(8.dp))
@@ -147,17 +150,10 @@ fun Comment(isComment: Boolean, viewModel: CommentViewModel, comment : CommentCo
                         CoroutineScope(Dispatchers.Main).launch {
                             try {
                                 viewModel.deleteComment(comment.id.toString())
-                                //에피소드 id 추가 필요
-                                if(isComment) viewModel.getComment("1")
+                                if(isComment) viewModel.getComment()
                                 else viewModel.getRecomment()
                             } catch (e: HttpException) {
-                                var message = ""
-                                val errorBody = JSONObject(e.response()?.errorBody()?.string())
-                                errorBody.keys().forEach { key ->
-                                    message += ("$key - ${errorBody.getString(key)}" + "\n")
-                                }
-                                message = message.substring(0, message.length-1)
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                makeError(context, e)
                             }
                         }
 

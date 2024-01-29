@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.watoon.NavigationDestination
+import com.example.watoon.function.MenuButton
 
 @Composable
 fun SignupCompletePage (onEnter: (String) -> Unit){
