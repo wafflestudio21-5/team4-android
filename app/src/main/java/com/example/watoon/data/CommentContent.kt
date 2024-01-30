@@ -13,6 +13,8 @@ data class CommentContent(
     @Json(name = "subComments") val subComments : String,
     @Json(name = "likedBy") val likedBy : String,
     @Json(name = "dislikedBy") val dislikedBy : String,
+    @Json(name = "liking") val liking:Boolean,
+    @Json(name = "disliking") val disliking:Boolean
 )
 
 data class UserInfo(

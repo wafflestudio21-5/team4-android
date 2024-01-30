@@ -5,6 +5,7 @@ import com.example.watoon.MyApp
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.PasswordResetRequest
 import com.example.watoon.data.RegisterRequest
+import com.example.watoon.function.setToken
 import com.example.watoon.network.MyRestAPI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -22,9 +23,9 @@ class LoginViewModel @Inject constructor(private var api : MyRestAPI) : ViewMode
 
         val loginResponse = api.login(loginRequest)
         val token = loginResponse.access
-        MyApp.preferences.setToken("token", token)
         val id = loginResponse.user.id
-        MyApp.preferences.setToken("id", id.toString())
+
+        setToken(token, id.toString())
     }
 
     suspend fun passwordReset(email:String) {

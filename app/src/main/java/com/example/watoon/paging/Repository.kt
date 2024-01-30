@@ -5,6 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.example.watoon.MyApp
 import com.example.watoon.data.CommentRequest
+import com.example.watoon.function.getToken
 import com.example.watoon.network.MyRestAPI
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -41,12 +42,12 @@ class Repository @Inject constructor(
     ).flow
 
     suspend fun deleteComment(id: String){
-        api.deleteComment("access=" + MyApp.preferences.getToken("token", ""), id)
+        api.deleteComment(getToken(), id)
     }
 
     suspend fun uploadComment(episodeId : String, content : String){
         val commentRequest = CommentRequest(content)
-        api.uploadComment("access=" + MyApp.preferences.getToken("token", ""), episodeId, commentRequest)
+        api.uploadComment(getToken(), episodeId, commentRequest)
     }
 
     fun getRecomment(id: String) = Pager(
@@ -60,6 +61,6 @@ class Repository @Inject constructor(
 
     suspend fun uploadRecomment(episodeId : String, content : String){
         val commentRequest = CommentRequest(content)
-        api.uploadRecomment("access=" + MyApp.preferences.getToken("token", ""), episodeId, commentRequest)
+        api.uploadRecomment(getToken(), episodeId, commentRequest)
     }
 }

@@ -8,6 +8,7 @@ import com.example.watoon.MyApp
 import com.example.watoon.data.Episode
 import com.example.watoon.data.Webtoon
 import com.example.watoon.data.WebtoonDetailRequest
+import com.example.watoon.function.getToken
 import com.example.watoon.network.MyRestAPI
 import com.example.watoon.paging.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,10 +25,8 @@ class WebtoonMainViewModel @Inject constructor(
     val episodeList: MutableStateFlow<PagingData<Episode>> = _episodeList
 
     val webtoonInfo: MutableStateFlow<WebtoonDetailRequest> = MutableStateFlow(WebtoonDetailRequest())
-
-    val token = "access=" + MyApp.preferences.getToken("token", "")
     suspend fun getWebtoonInfo(webtoonId: String){
-        webtoonInfo.value =  api.getWebtoonInfo(token, webtoonId)
+        webtoonInfo.value =  api.getWebtoonInfo(getToken(), webtoonId)
     }
 
     suspend fun getEpisodeList(webtoonId:String){
@@ -37,8 +36,8 @@ class WebtoonMainViewModel @Inject constructor(
     }
 
     suspend fun changeSubscribe(webtoonId:String){
-        api.changeSubscribe(token ,webtoonId)
-        webtoonInfo.value =  api.getWebtoonInfo(token, webtoonId)
+        api.changeSubscribe(getToken() ,webtoonId)
+        webtoonInfo.value =  api.getWebtoonInfo(getToken(), webtoonId)
     }
 
 }

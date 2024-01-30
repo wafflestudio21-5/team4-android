@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.watoon.MyApp
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.getToken
 import com.example.watoon.network.MyRestAPI
 import com.example.watoon.paging.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,8 +30,6 @@ class WebtoonsViewModel @Inject constructor(
     }
 
     suspend fun getSubscribeWebtoons(){
-        subscribeWebtoonList.value = api.loadMySubscribeWebtoon(
-            "access=" + MyApp.preferences.getToken("token", "")
-        )
+        subscribeWebtoonList.value = api.loadMySubscribeWebtoon(getToken())
     }
 }

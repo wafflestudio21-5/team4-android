@@ -90,6 +90,7 @@ interface MyRestAPI {
 
     @GET("/api/episode/{id}/comment")
     suspend fun getComment(
+        @Header("Cookie") token:String,
         @Path(value = "id") id: String,
         @Query(value = "cursor") cursor: String?
     ) : CommentResponse
@@ -109,6 +110,7 @@ interface MyRestAPI {
 
     @GET("/api/comment/{id}/comment")
     suspend fun getRecomment(
+        @Header("Cookie") token:String,
         @Path(value = "id") id : String,
         @Query(value = "cursor") cursor : String?
     ) : RecommentResponse

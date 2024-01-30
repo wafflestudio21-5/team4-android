@@ -11,6 +11,7 @@ import com.example.watoon.data.UploadDays
 import com.example.watoon.data.UploadEpisodeRequest
 import com.example.watoon.data.UploadWebtoonRequest
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.getToken
 import com.example.watoon.network.MyRestAPI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +48,8 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
         val uploadEpisodeRequest = UploadEpisodeRequest(title, episodeNumberInt)
 
         Log.d("final webtoonId", webtoonId.toString())
-        api.uploadEpisode("access=" + MyApp.preferences.getToken("token", ""),
+        api.uploadEpisode(
+            getToken(),
             webtoonId.value.toString(),
             uploadEpisodeRequest)
     }
