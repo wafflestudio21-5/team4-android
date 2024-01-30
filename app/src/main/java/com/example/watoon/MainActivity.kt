@@ -25,6 +25,7 @@ import com.example.watoon.pages.WebtoonMainPage
 import com.example.watoon.pages.WebtoonUploadPage
 import com.example.watoon.ui.theme.WatoonTheme
 import com.example.watoon.viewModel.EpisodeViewModel
+import com.example.watoon.viewModel.LoginViewModel
 import com.example.watoon.viewModel.UploadViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,12 +44,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun SetNavigation() {
     val navController = rememberNavController()
+    val loginViewModel: LoginViewModel = hiltViewModel()
     val uploadViewModel: UploadViewModel = hiltViewModel()
     val episodeViewModel: EpisodeViewModel = hiltViewModel()
 
     NavHost(navController = navController, startDestination = NavigationDestination.Login) {
         composable(NavigationDestination.Login) {
-            LoginPage(onEnter = { navController.navigate(it) })
+            LoginPage(loginViewModel, onEnter = { navController.navigate(it) })
         }
 
         composable(NavigationDestination.Main) {
@@ -98,10 +100,10 @@ private fun SetNavigation() {
         }
 
         composable(NavigationDestination.CreateAccount) {
-            CreateAccountPage(onEnter = { navController.navigate(it) })
+            CreateAccountPage(loginViewModel, onEnter = { navController.navigate(it) })
         }
         composable(NavigationDestination.EmailSent){
-            EmailSentPage(onEnter = { navController.navigate(it) })
+            EmailSentPage(loginViewModel, onEnter = { navController.navigate(it) })
         }
         composable(NavigationDestination.SignupComplete){
             SignupCompletePage(onEnter = { navController.navigate(it) })

@@ -14,12 +14,16 @@ import com.example.watoon.data.UploadWebtoonRequest
 import com.example.watoon.data.Webtoon
 import com.example.watoon.data.WebtoonDetailRequest
 import com.example.watoon.data.WebtoonListRequset
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 import retrofit2.http.Query
@@ -52,11 +56,14 @@ interface MyRestAPI {
         @Body data: UploadWebtoonRequest
     )
 
+    @Multipart
     @POST("/api/webtoon/{id}/episode")
     suspend fun uploadEpisode(
         @Header("Cookie") token: String,
         @Path(value = "id") id: String,
-        @Body data: UploadEpisodeRequest
+        @Part("title") title: RequestBody,
+        @Part("episodeNumber") episodeNumber: RequestBody,
+        @Part image: MultipartBody.Part
     )
 
     @GET("/api/webtoonList/{list_type}")

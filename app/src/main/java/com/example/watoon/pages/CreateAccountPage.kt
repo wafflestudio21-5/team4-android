@@ -41,9 +41,10 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateAccountPage(onEnter: (String) -> Unit){
-    val viewModel: LoginViewModel = hiltViewModel()
-
+fun CreateAccountPage(
+    viewModel: LoginViewModel,
+    onEnter: (String) -> Unit
+){
     var email by rememberSaveable { mutableStateOf("") }
     var pw1 by rememberSaveable { mutableStateOf("") }
     var pw2 by rememberSaveable { mutableStateOf("") }

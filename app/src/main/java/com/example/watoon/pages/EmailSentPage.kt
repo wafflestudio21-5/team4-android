@@ -38,9 +38,10 @@ import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmailSentPage (onEnter: (String) -> Unit){
-    val viewModel: LoginViewModel = hiltViewModel()
-
+fun EmailSentPage (
+    viewModel: LoginViewModel,
+    onEnter: (String) -> Unit
+){
     var email by rememberSaveable { mutableStateOf("") }
 
     var isLoading by remember { mutableStateOf(false) }

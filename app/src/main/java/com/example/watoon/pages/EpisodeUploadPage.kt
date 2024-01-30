@@ -4,8 +4,8 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,17 +27,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
 import com.example.watoon.function.MenuButton
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.UploadViewModel
-import com.example.watoon.viewModel.WebtoonsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import retrofit2.HttpException
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,9 +44,9 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
 
     var episodeTitle by remember { mutableStateOf("") }
     var episodeNumber by remember { mutableStateOf("")}
-    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
-    val chooseFile = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-        selectedFileUri = uri
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val getContent = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+        selectedImageUri = uri
     }
 
     Column (
@@ -99,24 +97,27 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
         ) {
             Text(text = "파일 첨부")
             IconButton(
-                onClick = { chooseFile.launch("*/*") },
+                onClick = { getContent.launch("*/*") },
                 modifier = Modifier
                     .padding(8.dp)
             ) {
                 Icon(imageVector = Icons.Default.AddCircle, contentDescription = null)
             }
         }
-        if (selectedFileUri != null) {
-            Text("Selected File: ${getFileName(selectedFileUri!!)}")
+        if (selectedImageUri != null) {
+            Text("Selected File: ${getFileName(selectedImageUri!!)}",
+                modifier = Modifier.padding(8.dp))
         }
         MenuButton(text = "업로드") {
             isLoading = true
+
             CoroutineScope(Dispatchers.Main).launch {
                 try {
-                    viewModel.uploadEpisode(episodeTitle, episodeNumber)
+                    viewModel.uploadEpisode(episodeTitle, episodeNumber, selectedImageUri)
                     Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
                     episodeTitle = ""
                     episodeNumber = ""
+                    selectedImageUri = null
                 } catch (e: HttpException) {
                     makeError(context, e)
                 } finally {

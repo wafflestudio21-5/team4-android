@@ -91,4 +91,7 @@ dependencies {
     // Paging
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation("androidx.paging:paging-compose:3.3.0-alpha02")
+
+    //gson
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }

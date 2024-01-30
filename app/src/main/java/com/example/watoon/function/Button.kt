@@ -36,7 +36,8 @@ fun MenuButton(
     Button(
         onClick = onClick,
         modifier = Modifier
-            .padding(2.dp)
+            .padding(2.dp),
+        colors = ButtonDefaults.buttonColors(Color(255,203,49))
     ) {
         Text(text = text)
     }
