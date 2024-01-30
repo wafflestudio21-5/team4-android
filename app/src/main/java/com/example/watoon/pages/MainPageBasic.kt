@@ -130,7 +130,7 @@ fun MainPageBasic(
                 MainPage(toWebtoonMain)
             }
             else{
-                UserPage()
+                UserPage(toWebtoonMain)
             }
         }
     }

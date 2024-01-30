@@ -38,7 +38,7 @@ import retrofit2.HttpException
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserPage() {
+fun UserPage(toWebtoonMain : (Webtoon) -> Unit) {
     val viewModel:WebtoonsViewModel = hiltViewModel()
     var isComment by remember { mutableStateOf(false) }
 
@@ -92,13 +92,20 @@ fun UserPage() {
                 .padding(top = 60.dp)
         ){
             items(subScribeWebtoons){
-                WebtoonItem(it)
+                WebtoonItem(toWebtoonMain, it)
             }
         }
     }
 }
 
 @Composable
-fun WebtoonItem(webtoon: Webtoon){
-    Text(webtoon.title)
+fun WebtoonItem(toWebtoonMain : (Webtoon) -> Unit, webtoon: Webtoon){
+    Row(
+        modifier = Modifier.clickable {
+            toWebtoonMain(webtoon)
+        }
+    ) {
+        Text(webtoon.title)
+    }
+
 }

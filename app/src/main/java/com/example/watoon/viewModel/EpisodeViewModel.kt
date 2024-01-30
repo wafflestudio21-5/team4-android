@@ -6,7 +6,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.watoon.data.CommentContent
 import com.example.watoon.data.EpisodeContent
+import com.example.watoon.data.Like
 import com.example.watoon.data.WebtoonDetailRequest
+import com.example.watoon.function.getToken
 import com.example.watoon.network.MyRestAPI
 import com.example.watoon.paging.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +31,15 @@ class EpisodeViewModel @Inject constructor(
     private var episodeId = ""
     var commentId = 0
     var comment : CommentContent? = null
+
+
+    suspend fun deleteLike(commentId: String){
+        api.deleteLike(getToken(),commentId)
+    }
+
+    suspend fun putLike(commentId: String, isLike: Boolean){
+        api.putLike(getToken(),commentId, Like(isLike, !isLike))
+    }
 
     suspend fun getEpisodeContent(episodeIdFirst:String){
         episodeInfo.value = api.getEpisodeInfo(episodeIdFirst)

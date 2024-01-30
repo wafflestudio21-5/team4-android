@@ -4,6 +4,8 @@ import com.example.watoon.data.CommentRequest
 import com.example.watoon.data.EpisodeListRequest
 import com.example.watoon.data.CommentResponse
 import com.example.watoon.data.EpisodeContent
+import com.example.watoon.data.Like
+import com.example.watoon.data.LikeRequest
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.LoginResponse
 import com.example.watoon.data.PasswordResetRequest
@@ -20,6 +22,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 import retrofit2.http.Query
@@ -132,4 +135,17 @@ interface MyRestAPI {
         @Header("Cookie") token:String,
         @Path(value = "id") id:String
     )
+
+    @DELETE("api/comment/{id}/like")
+    suspend fun deleteLike(
+        @Header("Cookie") token : String,
+        @Path(value = "id") id:String
+    )
+
+    @PUT("api/comment/{id}/like")
+    suspend fun putLike(
+        @Header("Cookie") token : String,
+        @Path(value = "id") id:String,
+        @Body data : Like
+    ):LikeRequest
 }
