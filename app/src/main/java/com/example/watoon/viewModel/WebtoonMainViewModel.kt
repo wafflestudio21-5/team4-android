@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.watoon.MyApp
 import com.example.watoon.data.Episode
 import com.example.watoon.data.Webtoon
 import com.example.watoon.data.WebtoonDetailRequest
@@ -23,14 +24,21 @@ class WebtoonMainViewModel @Inject constructor(
     val episodeList: MutableStateFlow<PagingData<Episode>> = _episodeList
 
     val webtoonInfo: MutableStateFlow<WebtoonDetailRequest> = MutableStateFlow(WebtoonDetailRequest())
+
+    val token = "access=" + MyApp.preferences.getToken("token", "")
     suspend fun getWebtoonInfo(webtoonId: String){
-        webtoonInfo.value =  api.getWebtoonInfo(webtoonId)
+        webtoonInfo.value =  api.getWebtoonInfo(token, webtoonId)
     }
 
     suspend fun getEpisodeList(webtoonId:String){
         repository.getEpisode(webtoonId).cachedIn(viewModelScope).collect{
             episodeList.value = it
         }
+    }
+
+    suspend fun changeSubscribe(webtoonId:String){
+        api.changeSubscribe(token ,webtoonId)
+        webtoonInfo.value =  api.getWebtoonInfo(token, webtoonId)
     }
 
 }

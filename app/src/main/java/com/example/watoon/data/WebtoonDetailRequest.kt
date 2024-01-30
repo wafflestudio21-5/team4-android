@@ -14,6 +14,6 @@ data class WebtoonDetailRequest(
     @Json(name = "episodeCount") val episodeCount:String = "",
     @Json(name = "isFinished") val isFinished:Boolean = false,
     @Json(name = "tags") val tags:List<Tag> = emptyList(),
-    @Json(name = "subscribing") val subscribing:Boolean = false,
+    @Json(name = "subscribing") var subscribing:Boolean = false,
     @Json(name = "subscribeCount") val subscribeCount:String = "",
 )

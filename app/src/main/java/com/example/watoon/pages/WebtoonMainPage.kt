@@ -1,12 +1,14 @@
 package com.example.watoon.pages
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -22,14 +24,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.watoon.NavigationDestination
+import com.example.watoon.R
 import com.example.watoon.data.DayOfWeek
 import com.example.watoon.data.Episode
 import com.example.watoon.data.Tag
@@ -37,6 +44,7 @@ import com.example.watoon.data.WebtoonDetailRequest
 import com.example.watoon.function.makeError
 import com.example.watoon.function.translate
 import com.example.watoon.viewModel.WebtoonMainViewModel
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 @Composable
@@ -49,6 +57,9 @@ fun WebtoonMainPage(
     val episodeList = viewModel.episodeList.collectAsLazyPagingItems()
     val webtoonInfo = viewModel.webtoonInfo.collectAsState().value
 
+    val subscribe = webtoonInfo.subscribing
+
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     
     LaunchedEffect(true){
@@ -59,7 +70,6 @@ fun WebtoonMainPage(
             makeError(context, e)
         }
     }
-
 
     Column(
         modifier = Modifier.padding(horizontal = 10.dp)
@@ -73,6 +83,27 @@ fun WebtoonMainPage(
             ) {
                 Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
             }
+        }
+
+        Row{
+            Image(
+                painter = if(subscribe) painterResource(R.drawable.baseline_check_24)
+                          else painterResource(R.drawable.baseline_add_24),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(30.dp)
+                    .clickable {
+                        scope.launch {
+                            try{
+                                viewModel.changeSubscribe(webtoonId.toString())
+                            } catch(e : HttpException){
+                                makeError(context, e)
+                            }
+                        }
+                    },
+                colorFilter = ColorFilter.tint(Color.Black)
+            )
+            Text("구독")
         }
 
         WebtoonInfo(webtoonInfo)

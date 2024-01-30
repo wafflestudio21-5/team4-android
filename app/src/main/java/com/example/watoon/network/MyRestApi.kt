@@ -41,7 +41,7 @@ interface MyRestAPI {
         @Path(value = "id") id: String
     ): List<Webtoon>
 
-    @GET("/api/profile/subscribeWebtoonList")
+    @GET("/api/subscribeWebtoonList")
     suspend fun loadMySubscribeWebtoon(
         @Header("Cookie") token: String,
     ) : List<Webtoon>
@@ -73,6 +73,7 @@ interface MyRestAPI {
 
     @GET("/api/webtoon/{id}")
     suspend fun getWebtoonInfo(
+        @Header("Cookie") token : String,
         @Path(value = "id") id:String
     ):WebtoonDetailRequest
 
@@ -123,4 +124,10 @@ interface MyRestAPI {
     suspend fun getEpisodeInfo(
         @Path(value = "id") id:String
     ): EpisodeContent
+
+    @POST("api/webtoon/{id}/subscribe")
+    suspend fun changeSubscribe(
+        @Header("Cookie") token:String,
+        @Path(value = "id") id:String
+    )
 }
