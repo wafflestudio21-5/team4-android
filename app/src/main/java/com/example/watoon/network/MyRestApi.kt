@@ -41,6 +41,11 @@ interface MyRestAPI {
         @Path(value = "id") id: String
     ): List<Webtoon>
 
+    @GET("/api/profile/subscribeWebtoonList")
+    suspend fun loadMySubscribeWebtoon(
+        @Header("Cookie") token: String,
+    ) : List<Webtoon>
+
     @POST("/api/webtoonList")
     suspend fun uploadWebtoon(
         @Header("Cookie") token: String,
