@@ -43,13 +43,16 @@ import retrofit2.HttpException
 
 @Composable
 fun WebtoonUploadPage(viewModel:UploadViewModel, onEnter: (String) -> Unit) {
+
     var isLoading by remember { mutableStateOf(false) }
     val myWebtoonList by viewModel.myWebtoonList.collectAsState()
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        val context = LocalContext.current
+
 
         Row(
             modifier = Modifier

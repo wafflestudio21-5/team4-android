@@ -110,8 +110,10 @@ fun LoginPage (
         }
 
         if (isLoading) {
-            Text(text = "\n로딩 중입니다...",
-                fontSize = 13.sp)
+            Text(
+                text = "\n로딩 중입니다...",
+                fontSize = 13.sp
+            )
         }
 
         Text("\n\n")
