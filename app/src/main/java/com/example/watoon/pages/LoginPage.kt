@@ -7,12 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
-import com.example.watoon.function.LoginButton
+import com.example.watoon.function.MyButton
 import com.example.watoon.function.MyTextField
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.LoginViewModel
@@ -76,7 +72,7 @@ fun LoginPage (
             visible = false
         )
 
-        LoginButton(text = "로그인") {
+        MyButton(text = "로그인") {
             isLoading = true
             CoroutineScope(Dispatchers.Main).launch {
                 try {

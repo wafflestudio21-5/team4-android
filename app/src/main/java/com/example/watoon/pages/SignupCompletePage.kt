@@ -8,8 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.watoon.NavigationDestination
-import com.example.watoon.function.LoginButton
-import com.example.watoon.function.MenuButton
+import com.example.watoon.function.MyButton
 
 @Composable
 fun SignupCompletePage (onEnter: (String) -> Unit){
@@ -20,7 +19,7 @@ fun SignupCompletePage (onEnter: (String) -> Unit){
     ) {
         Text("이메일을 성공적으로 전송하였습니다.")
         Text("이메일을 확인해 주세요.")
-        LoginButton(text = "로그인 화면으로"){
+        MyButton(text = "로그인 화면으로"){
             onEnter(NavigationDestination.Login)
         }
     }

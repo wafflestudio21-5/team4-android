@@ -1,15 +1,7 @@
 package com.example.watoon.pages
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,21 +9,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
-import com.example.watoon.R
 import com.example.watoon.function.BasicTopBar
-import com.example.watoon.function.LoginButton
-import com.example.watoon.function.LoginText
+import com.example.watoon.function.MyButton
+import com.example.watoon.function.MyText
 import com.example.watoon.function.MyTextField
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.LoginViewModel
@@ -62,7 +47,7 @@ fun CreateAccountPage(onEnter: (String) -> Unit){
             onEnter = onEnter
         )
 
-        LoginText(text = "\n이메일 주소")
+        MyText(text = "\n이메일 주소")
         MyTextField(
             value = email,
             onValueChange = { email = it },
@@ -70,7 +55,7 @@ fun CreateAccountPage(onEnter: (String) -> Unit){
             visible = true
         )
 
-        LoginText(text = "비밀번호")
+        MyText(text = "비밀번호")
         MyTextField(
             value = pw1,
             onValueChange = { pw1 = it },
@@ -78,7 +63,7 @@ fun CreateAccountPage(onEnter: (String) -> Unit){
             visible = false
         )
 
-        LoginText(text = "비밀번호 확인")
+        MyText(text = "비밀번호 확인")
         MyTextField(
             value = pw2,
             onValueChange = { pw2 = it },
@@ -86,7 +71,7 @@ fun CreateAccountPage(onEnter: (String) -> Unit){
             visible = false
         )
 
-        LoginText(text = "닉네임")
+        MyText(text = "닉네임")
         MyTextField(
             value = nickname,
             onValueChange = { nickname = it },
@@ -94,7 +79,7 @@ fun CreateAccountPage(onEnter: (String) -> Unit){
             visible = false
         )
 
-        LoginButton(text = "회원가입"){
+        MyButton(text = "회원가입"){
             isLoading = true
             CoroutineScope(Dispatchers.Main).launch {
                 try {

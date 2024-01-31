@@ -32,17 +32,9 @@ import androidx.compose.ui.unit.sp
 import com.example.watoon.NavigationDestination
 import com.example.watoon.R
 
-@Composable
-fun LoginText(text:String){
-    Text(
-        text = text,
-        modifier = Modifier.padding(11.dp),
-        fontWeight = FontWeight.Bold
-    )
-}
 
 @Composable
-fun LoginButton(
+fun MyButton(
     text: String,
     onClick: () -> Unit,
 ) {
@@ -61,6 +53,15 @@ fun LoginButton(
             fontSize = 18.sp
         )
     }
+}
+
+@Composable
+fun MyText(text:String){
+    Text(
+        text = text,
+        modifier = Modifier.padding(11.dp),
+        fontWeight = FontWeight.Bold
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

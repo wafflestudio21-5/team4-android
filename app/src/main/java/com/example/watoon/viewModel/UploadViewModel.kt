@@ -28,7 +28,7 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
             MyApp.preferences.getToken("id", ""))
     }
 
-    suspend fun uploadWebtoon(title : String, description : String, uploadDays : List<String>, tag1 : String, tag2 : String){
+    suspend fun uploadWebtoon(title : String, description : String, uploadDays : Set<String>, tag1 : String, tag2 : String){
         val uploadDaysTrimmed = uploadDays.drop(1)
         val uploadDaysList = uploadDaysTrimmed.map { UploadDays(it) }
 
