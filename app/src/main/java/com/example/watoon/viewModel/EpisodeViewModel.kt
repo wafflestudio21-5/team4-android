@@ -19,6 +19,7 @@ class EpisodeViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel(){
     val episodeInfo: MutableStateFlow<EpisodeContent> = MutableStateFlow(EpisodeContent())
+    val imageUrl : MutableStateFlow<String> = MutableStateFlow("")
 
     private val _commentList: MutableStateFlow<PagingData<CommentContent>> = MutableStateFlow(value = PagingData.empty())
     val commentList: MutableStateFlow<PagingData<CommentContent>> = _commentList
@@ -33,7 +34,9 @@ class EpisodeViewModel @Inject constructor(
     suspend fun getEpisodeContent(episodeIdFirst:String){
         episodeInfo.value = api.getEpisodeInfo(episodeIdFirst)
         episodeId = episodeInfo.value.id.toString()
+        imageUrl.value = episodeInfo.value.imageUrl
     }
+
     suspend fun getComment(){
         repository.getComment(episodeId).cachedIn(viewModelScope).collect{
             _commentList.value = it

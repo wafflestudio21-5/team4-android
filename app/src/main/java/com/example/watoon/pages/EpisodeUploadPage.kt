@@ -113,7 +113,7 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
 
             CoroutineScope(Dispatchers.Main).launch {
                 try {
-                    viewModel.uploadEpisode(episodeTitle, episodeNumber, selectedImageUri)
+                    viewModel.uploadEpisode(episodeTitle, episodeNumber, selectedImageUri, context)
                     Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
                     episodeTitle = ""
                     episodeNumber = ""
