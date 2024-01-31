@@ -7,6 +7,7 @@ import androidx.paging.cachedIn
 import com.example.watoon.data.CommentContent
 import com.example.watoon.data.EpisodeContent
 import com.example.watoon.data.Like
+import com.example.watoon.data.Rating
 import com.example.watoon.data.WebtoonDetailRequest
 import com.example.watoon.function.getToken
 import com.example.watoon.network.MyRestAPI
@@ -32,6 +33,17 @@ class EpisodeViewModel @Inject constructor(
     var commentId = 0
     var comment : CommentContent? = null
 
+    suspend fun putEpisodeRate(rate:Int){
+        api.putEpisodeRate(getToken(),episodeId, Rating(rate))
+        getEpisodeContent(episodeId)
+    }
+    suspend fun getEpisodeRate():Int{
+        return api.getEpisodeRate(getToken(), episodeId).rating?: 0
+    }
+    suspend fun putEpisodeLike(){
+        api.putEpisodeLike(getToken(), episodeInfo.value.id.toString())
+        getEpisodeContent(episodeId)
+    }
 
     suspend fun deleteLike(commentId: String){
         api.deleteLike(getToken(),commentId)
@@ -42,7 +54,7 @@ class EpisodeViewModel @Inject constructor(
     }
 
     suspend fun getEpisodeContent(episodeIdFirst:String){
-        episodeInfo.value = api.getEpisodeInfo(episodeIdFirst)
+        episodeInfo.value = api.getEpisodeInfo(getToken(), episodeIdFirst)
         episodeId = episodeInfo.value.id.toString()
     }
     suspend fun getComment(){

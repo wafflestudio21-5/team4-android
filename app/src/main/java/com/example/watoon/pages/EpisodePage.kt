@@ -1,12 +1,15 @@
 package com.example.watoon.pages
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -16,7 +19,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,7 +35,12 @@ import retrofit2.HttpException
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,9 +77,14 @@ fun EpisodePage(
 
     val context = LocalContext.current
 
+    var showDialog by remember { mutableStateOf(false) }
+
+    var giveRating by remember { mutableIntStateOf(0) }
+
     LaunchedEffect(true){
         try {
             viewModel.getEpisodeContent(episodeId.toString())
+            giveRating = viewModel.getEpisodeRate()
         }catch (e:HttpException){
             makeError(context, e)
         }
@@ -79,6 +94,7 @@ fun EpisodePage(
         topBar = {
             // TopBar content
             TopAppBar(
+                modifier = Modifier.height(50.dp),
                 colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Gray),
                 title = {
                     Text(text = " ")
@@ -120,6 +136,26 @@ fun EpisodePage(
                                 },
                             colorFilter = ColorFilter.tint(Color.Black)
                         )
+
+                        Row(
+                            modifier = Modifier.clickable {
+                                scope.launch {
+                                    try {
+                                        viewModel.putEpisodeLike()
+                                    } catch (e: HttpException) {
+                                        makeError(context, e)
+                                    }
+                                }
+                            }
+                        ) {
+                            Image(
+                                painter = if(episodeContent.liking) painterResource(R.drawable.baseline_favorite_24) else painterResource(R.drawable.baseline_favorite_border_24),
+                                colorFilter = if(episodeContent.liking) ColorFilter.tint(Color.Red) else ColorFilter.tint(Color.Black),
+                                contentDescription = ""
+                                )
+                            Text(episodeContent.likedBy.toString())
+                        }
+
 
                         Image(
                             painter = painterResource(R.drawable.baseline_arrow_back_ios_new_24),
@@ -163,6 +199,104 @@ fun EpisodePage(
             )
         }
     ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 50.dp),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            Row(
+            ){
+                Image(
+                    painter = painterResource(R.drawable.baseline_star_24),
+                    colorFilter = ColorFilter.tint(Color.Red),
+                    contentDescription = ""
+                )
+                Text(episodeContent.totalRating)
+            }
 
+            Button(
+                onClick = {showDialog = true}
+            ){
+                Text("별점주기")
+            }
+        }
     }
+
+    if(showDialog){
+        AlertDialog(
+            text = {
+                Column{
+                    Row{
+                        RatingStar(1, giveRating) { rating ->
+                            giveRating = rating
+                        }
+                        RatingStar(2, giveRating) { rating ->
+                            giveRating = rating
+                        }
+                        RatingStar(3, giveRating) { rating ->
+                            giveRating = rating
+                        }
+                        RatingStar(4, giveRating) { rating ->
+                            giveRating = rating
+                        }
+                        RatingStar(5, giveRating) { rating ->
+                            giveRating = rating
+                        }
+                    }
+                    Text("$giveRating.00")
+                }
+            },
+            onDismissRequest = {
+                showDialog = false
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if(giveRating == 0){
+                            Toast.makeText(context, "별점을 주지 않았습니다", Toast.LENGTH_LONG).show()
+                        }
+                        else{
+                            scope.launch {
+                                try {
+                                    viewModel.putEpisodeRate(giveRating)
+                                    showDialog = false
+                                } catch (e: HttpException) {
+                                    makeError(context, e)
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    Text("확인")
+                }
+            },
+
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                    }
+                ) {
+                    Text("취소")
+                }
+            },
+
+            )
+    }
+}
+
+@Composable
+fun RatingStar(rate: Int, giveRating: Int, onRatingChanged: (Int) -> Unit) {
+    val starColor = if (rate <= giveRating) Color.Red else Color.Gray
+
+    Image(
+        modifier = Modifier
+            .clickable {
+                onRatingChanged(rate)
+            },
+        painter = painterResource(R.drawable.baseline_star_24),
+        colorFilter = ColorFilter.tint(starColor),
+        contentDescription = ""
+    )
 }

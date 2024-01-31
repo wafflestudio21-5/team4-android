@@ -1,5 +1,6 @@
 package com.example.watoon.network
 
+import android.provider.Telephony
 import com.example.watoon.data.CommentRequest
 import com.example.watoon.data.EpisodeListRequest
 import com.example.watoon.data.CommentResponse
@@ -9,6 +10,8 @@ import com.example.watoon.data.LikeRequest
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.LoginResponse
 import com.example.watoon.data.PasswordResetRequest
+import com.example.watoon.data.Rating
+import com.example.watoon.data.RatingRequest
 import com.example.watoon.data.RecommentResponse
 import com.example.watoon.data.RegisterRequest
 import com.example.watoon.data.UploadEpisodeRequest
@@ -127,6 +130,7 @@ interface MyRestAPI {
 
     @GET("/api/episode/{id}")
     suspend fun getEpisodeInfo(
+        @Header("Cookie") token : String,
         @Path(value = "id") id:String
     ): EpisodeContent
 
@@ -148,4 +152,23 @@ interface MyRestAPI {
         @Path(value = "id") id:String,
         @Body data : Like
     ):LikeRequest
+
+    @POST("api/episode/{id}/like")
+    suspend fun putEpisodeLike(
+        @Header("Cookie") token : String,
+        @Path(value = "id") id:String
+    )
+
+    @GET("api/episode/{id}/rating")
+    suspend fun getEpisodeRate(
+        @Header("Cookie") token : String,
+        @Path(value = "id") id:String
+    ):RatingRequest
+
+    @PUT("api/episode/{id}/rating")
+    suspend fun putEpisodeRate(
+        @Header("Cookie") token : String,
+        @Path(value = "id") id:String,
+        @Body data : Rating
+    ):RatingRequest
 }
