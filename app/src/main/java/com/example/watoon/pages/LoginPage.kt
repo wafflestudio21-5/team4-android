@@ -1,27 +1,19 @@
 package com.example.watoon.pages
 
-import android.util.Log
-import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.compose.R
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,20 +25,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
+import com.example.watoon.function.LoginButton
+import com.example.watoon.function.MyTextField
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import retrofit2.HttpException
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPage (
     onEnter: (String) -> Unit,
@@ -68,26 +59,21 @@ fun LoginPage (
         Image(
             painter = painterResource(id = com.example.watoon.R.drawable.watoon),
             contentDescription = null,
-            modifier = Modifier.size(300.dp)
+            modifier = Modifier.size(250.dp)
         )
 
-        TextField(
+        MyTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("이메일 주소") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+            label = "이메일 주소",
+            visible = true
         )
 
-        TextField(
+        MyTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("비밀번호") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+            label = "비밀번호",
+            visible = false
         )
 
         LoginButton(text = "로그인") {
@@ -124,28 +110,10 @@ fun LoginPage (
         }
 
         if (isLoading) {
-            Text(text = "로딩 중입니다...",
+            Text(text = "\n로딩 중입니다...",
                 fontSize = 13.sp)
         }
-        Text("\n\n")
-    }
-}
 
-@Composable
-fun LoginButton(
-    text: String,
-    onClick: () -> Unit,
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(Color(255,203,49))
-    ) {
-        Text(
-            text = text,
-            color = Color.Black
-        )
+        Text("\n\n")
     }
 }

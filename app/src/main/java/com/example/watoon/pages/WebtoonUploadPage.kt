@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.MenuButton
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.UploadViewModel
 import com.example.watoon.viewModel.WebtoonsViewModel
@@ -99,7 +100,7 @@ fun WebtoonUploadPage(viewModel:UploadViewModel, onEnter: (String) -> Unit) {
                 }
             }
             item{
-                LoginButton(text = "새 웹툰"){
+                MenuButton(text = "새 웹툰"){
                     onEnter(NavigationDestination.NewWebtoon)
                 }
             }
