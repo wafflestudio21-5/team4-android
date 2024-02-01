@@ -1,8 +1,5 @@
 package com.example.watoon.pages
 
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -32,24 +28,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.NavigationDestination
-import com.example.watoon.R
 import com.example.watoon.data.Webtoon
-import com.example.watoon.function.BasicTopBar
-import com.example.watoon.function.MenuButton
-import com.example.watoon.function.UploadTopBar
+import com.example.watoon.function.TwoButtonTopBar
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.UploadViewModel
-import com.example.watoon.viewModel.WebtoonsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import retrofit2.HttpException
 
 @Composable
@@ -78,7 +67,7 @@ fun WebtoonUploadPage(viewModel:UploadViewModel, onEnter: (String) -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        UploadTopBar(
+        TwoButtonTopBar(
             text = "나의 웹툰 목록",
             destination = NavigationDestination.Main,
             destination2 = NavigationDestination.NewWebtoon,

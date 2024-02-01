@@ -18,7 +18,7 @@ import com.example.watoon.data.UploadEpisodeRequest
 import com.example.watoon.data.UploadWebtoonRequest
 import com.example.watoon.data.Webtoon
 import com.example.watoon.data.WebtoonDetailRequest
-import com.example.watoon.data.WebtoonListRequset
+import com.example.watoon.data.WebtoonListRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -69,7 +69,7 @@ interface MyRestAPI {
     suspend fun getWebtoonList(
         @Path(value = "list_type") type:String,
         @Query(value = "cursor") cursor:String?
-    ):WebtoonListRequset
+    ):WebtoonListRequest
 
     @GET("/api/webtoon/{id}/episode")
     suspend fun getEpisodeList(

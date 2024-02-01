@@ -6,13 +6,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,16 +14,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.example.watoon.NavigationDestination
 import com.example.watoon.function.BasicTopBar
 import com.example.watoon.function.MyButton
 import com.example.watoon.function.MyText
 import com.example.watoon.function.MyTextField
+import com.example.watoon.function.UploadButton
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.UploadViewModel
 import kotlinx.coroutines.launch
@@ -43,8 +36,9 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
     var episodeNumber by remember { mutableStateOf("")}
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
 
-    val chooseFile = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-        selectedFileUri = uri
+    val chooseFile = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? -> selectedFileUri = uri
     }
 
     val context = LocalContext.current
@@ -74,19 +68,12 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
             visible = true
         )
 
-        Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "파일 첨부")
-            IconButton(
-                onClick = { chooseFile.launch("*/*") },
-                modifier = Modifier
-                    .padding(8.dp)
-            ) {
-                Icon(imageVector = Icons.Default.AddCircle, contentDescription = null)
-            }
-        }
+        MyText(text = "파일 첨부")
+        UploadButton(
+            chooseFile = chooseFile,
+            onFileSelected = { uri -> selectedFileUri = uri }
+        )
+
         if (selectedFileUri != null) {
             Text("Selected File: ${getFileName(selectedFileUri!!)}")
         }

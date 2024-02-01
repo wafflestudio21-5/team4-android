@@ -34,6 +34,7 @@ import com.example.watoon.NavigationDestination
 import com.example.watoon.viewModel.WebtoonsViewModel
 import com.example.watoon.data.User
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.MainTopBar
 import com.example.watoon.function.makeError
 import com.example.watoon.function.translate
 import kotlinx.coroutines.launch
@@ -70,42 +71,19 @@ fun MainPage(
     
     Scaffold(
         topBar = {
-            // TopBar content
-            TopAppBar(
-                title = {
-                    Text(text = " ")
-                },
-                actions = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        for(i in 0..7){
-                            Text(
-                                text= translate(apiListNames[i]),
-                                color = if(i==listNum) Color.Green else Color.Black,
-                                modifier = Modifier
-                                    .clickable {
-                                        listNum = i
-                                        scope.launch {
-                                            try {
-                                                viewModel.getWebtoons(apiListNames[listNum])
-                                            } catch(e : HttpException){
-                                                makeError(context, e)
-                                            }
-                                        }
-                                    }
-
-                            )
-                        }
+            MainTopBar(apiListNames, listNum) { newIndex ->
+                listNum = newIndex
+                scope.launch {
+                    try {
+                        viewModel.getWebtoons(apiListNames[listNum])
+                    } catch (e: HttpException) {
+                        makeError(context, e)
                     }
                 }
-            )
+            }
         }
     ){
         LazyColumn(
-            //padding 방법 추가 고려 필요
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 60.dp)
@@ -127,12 +105,7 @@ fun RowOfWebtoon(
     rowList: List<Webtoon?>,
     toWebtoonMain : (Webtoon) -> Unit
 ){
-    val emptyWebtoon = Webtoon(
-        id = 0, title = "", releasedDate = "", totalRating = "",
-        author = User(
-            nickname = "", email = "", password = ""
-        ), subscribing = false, titleImage = ""
-    )
+    val emptyWebtoon = Webtoon()
     val emptyFunc : (Webtoon)->Unit = {}
 
     Row(
