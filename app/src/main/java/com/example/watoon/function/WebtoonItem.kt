@@ -136,7 +136,8 @@ fun MainWebtoonItem(webtoon: Webtoon, toWebtoonMain : (Webtoon) -> Unit) {
             text = stringCut(webtoon.title),
             color = Color.Black,
             fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(horizontal = 5.dp)
+            modifier = Modifier.padding(horizontal = 5.dp),
+            fontSize = 15.sp
         )
         Row(
             verticalAlignment = Alignment.CenterVertically

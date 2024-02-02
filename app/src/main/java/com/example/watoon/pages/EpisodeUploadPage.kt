@@ -77,7 +77,6 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
 
         MyText(text = "썸네일 추가")
         UploadButton(
-            mini = false,
             chooseFile = thumbnail,
             onFileSelected = { uri -> thumbnailUri = uri }
         )
@@ -88,7 +87,6 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
 
         MyText(text = "파일 첨부")
         UploadButton(
-            mini = false,
             chooseFile = chooseFile,
             onFileSelected = { uri -> if(uri!=null) selectedFileUris.add(uri) }
         )

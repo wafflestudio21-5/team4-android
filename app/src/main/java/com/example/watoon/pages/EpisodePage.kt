@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Face
@@ -46,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -105,8 +107,10 @@ fun EpisodePage(
                     .height(50.dp),
                 actions = {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 15.dp, end = 15.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ){
                         Image(
@@ -186,14 +190,27 @@ fun EpisodePage(
     ){
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 50.dp)
+                .fillMaxSize()
+                .padding(
+                    top = 50.dp,
+                    bottom = 50.dp
+                ),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ){
+            items(episodeContent.images){
+                AsyncImage(
+                    model = it.image,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
             item {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
+                        .fillMaxWidth()
+                        .padding(start = 15.dp, end = 15.dp, bottom = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
@@ -216,7 +233,6 @@ fun EpisodePage(
                 }
             }
         }
-
     }
 
 

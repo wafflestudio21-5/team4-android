@@ -15,5 +15,13 @@ data class EpisodeContent(
     @Json(name = "nextEpisode") val nextEpisode:String? = "",
     @Json(name = "liking") val liking:Boolean = false,
     @Json(name = "likedBy") val likedBy:Int = 0,
-    @Json(name = "imageUrl") val imageUrl:String = ""
+    @Json(name = "imageUrls") val imageUrls:String = "",
+    @Json(name = "imageDomain") val imageDomain:String = "",
+    @Json(name = "imageNumber") val imageNumber:String = "",
+    @Json(name = "images") val images:List<Image> = listOf(),
+)
+
+@JsonClass(generateAdapter = true)
+data class Image(
+    @Json(name = "image") val image:String = "",
 )

@@ -173,7 +173,6 @@ fun NewWebtoonPage (viewModel:UploadViewModel, onEnter: (String) -> Unit) {
 
         MyText(text = "썸네일 추가")
         UploadButton(
-            mini = true,
             chooseFile = chooseFile,
             onFileSelected = { uri -> selectedImageUri = uri }
         )

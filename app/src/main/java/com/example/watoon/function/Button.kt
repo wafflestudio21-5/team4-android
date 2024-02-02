@@ -117,23 +117,9 @@ fun MyTextField(
     )
 }
 
-@Composable
-fun MenuButton(
-    text: String,
-    onClick: () -> Unit,
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .padding(2.dp)
-    ) {
-        Text(text = text)
-    }
-}
 
 @Composable
 fun UploadButton(
-    mini:Boolean,
     chooseFile: ActivityResultLauncher<String>,
     onFileSelected: (Uri?) -> Unit
 ){
@@ -148,7 +134,7 @@ fun UploadButton(
         horizontalArrangement = Arrangement.Center
     ) {
         Column {
-            if(!mini) Text("\n")
+            Text(text = " ")
             Row {
                 Image(
                     painter = painterResource(R.drawable.baseline_upload_24),
@@ -156,7 +142,7 @@ fun UploadButton(
                 )
                 Text("  파일 업로드 하기")
             }
-            if(!mini) Text("\n")
+            Text(text = " ")
         }
     }
 }
