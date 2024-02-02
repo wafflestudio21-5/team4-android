@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -38,6 +39,7 @@ import com.example.watoon.viewModel.WebtoonsViewModel
 import com.example.watoon.data.User
 import com.example.watoon.data.Webtoon
 import com.example.watoon.function.MainTopBar
+import com.example.watoon.function.MainWebtoonItem
 import com.example.watoon.function.makeError
 import com.example.watoon.function.translate
 import kotlinx.coroutines.launch
@@ -117,31 +119,13 @@ fun RowOfWebtoon(
     ){
         for(i in 0..2){
             if(i<rowList.size){
-                rowList[i]?.let { Webtoon(webtoon = it, toWebtoonMain = toWebtoonMain)}
+                rowList[i]?.let { MainWebtoonItem(webtoon = it, toWebtoonMain = toWebtoonMain)}
             }
             else{
-                Webtoon(webtoon = emptyWebtoon, toWebtoonMain = emptyFunc)
+                MainWebtoonItem(webtoon = emptyWebtoon, toWebtoonMain = emptyFunc)
             }
         }
     }
 }
 
-@Composable
-fun Webtoon(webtoon: Webtoon, toWebtoonMain : (Webtoon) -> Unit) {
-    Column(
-        modifier = Modifier
-            .clickable {
-                toWebtoonMain(webtoon)
-            }
-    ) {
-        AsyncImage(
-            model = webtoon.titleImage,
-            contentDescription = null
-        )
-        Text(
-            text = webtoon.title,
-            color = Color.Black
-        )
-    }
-}
 

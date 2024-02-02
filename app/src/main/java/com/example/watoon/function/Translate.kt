@@ -11,3 +11,10 @@ fun translate(english: String): String = when (english) {
     "finished" -> "완결"
     else -> ""
 }
+
+fun stringCut(string: String): String {
+    return if(string.length>8){
+        string.substring(0..7) + " .."
+    }
+    else string
+}

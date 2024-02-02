@@ -51,26 +51,25 @@ fun MyDialog(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Button(
-                            onClick = onConfirm,
+                            onClick = onDismiss,
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
                                 .padding(end = 8.dp),
                             colors = ButtonDefaults.buttonColors(Watoon)
                         ) {
-                            Text("확인")
+                            Text("취소")
                         }
 
-                        // Dismiss Button
                         Button(
-                            onClick = onDismiss,
+                            onClick = onConfirm,
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
                                 .padding(start = 8.dp),
                             colors = ButtonDefaults.buttonColors(Watoon)
                         ) {
-                            Text("취소")
+                            Text("확인")
                         }
                     }
                 }

@@ -10,8 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -30,10 +34,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.watoon.NavigationDestination
 import com.example.watoon.R
+import com.example.watoon.data.EpisodeContent
+import com.example.watoon.data.Webtoon
 import com.example.watoon.ui.theme.Watoon
 
 @Composable
-fun BasicTopBar(text:String, destination:String, onEnter: (String) -> Unit){
+fun BasicTopBar(
+    text: String,
+    destination: String? = null,
+    destination2: String? = null,
+    onEnter: (String) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,45 +59,7 @@ fun BasicTopBar(text:String, destination:String, onEnter: (String) -> Unit){
             modifier = Modifier
                 .size(30.dp)
                 .clickable {
-                    onEnter(destination)
-                },
-            colorFilter = ColorFilter.tint(Color.White)
-        )
-        Text(
-            text = text,
-            color = Color.White,
-            fontSize = 20.sp,
-            modifier = Modifier
-                .weight(1f)
-                .padding(8.dp),
-            textAlign = TextAlign.Center
-        )
-        Image(
-            painter = painterResource(R.drawable.baseline_arrow_back_ios_new_24),
-            contentDescription = "",
-            modifier = Modifier.size(30.dp),
-            colorFilter = ColorFilter.tint(Color.Black)
-        )
-    }
-}
-
-@Composable
-fun TwoButtonTopBar(text:String, destination:String, destination2: String, onEnter: (String) -> Unit){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.Black)
-            .height(60.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Image(
-            painter = painterResource(R.drawable.baseline_arrow_back_ios_new_24),
-            contentDescription = "",
-            modifier = Modifier
-                .size(30.dp)
-                .clickable {
-                    onEnter(destination)
+                    destination?.let { onEnter(it) }
                 },
             colorFilter = ColorFilter.tint(Color.White)
         )
@@ -105,13 +78,12 @@ fun TwoButtonTopBar(text:String, destination:String, destination2: String, onEnt
             modifier = Modifier
                 .size(30.dp)
                 .clickable {
-                    onEnter(destination2)
+                    destination2?.let { onEnter(it) }
                 },
-            colorFilter = ColorFilter.tint(Color.White)
+            colorFilter = if(destination2 == null) ColorFilter.tint(Color.Black) else ColorFilter.tint(Color.White)
         )
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -219,6 +191,43 @@ fun MainTopBar(apiListNames: Array<String>, selectedListNum: Int, onListNumChang
                     )
                 }
             }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EpisodeTopBar(toWebtoonMain:(Webtoon) -> Unit, episodeContent:EpisodeContent){
+    TopAppBar(
+        modifier = Modifier.height(50.dp),
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Gray),
+        title = {
+            Text(text = " ")
+        },
+        actions = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .height(50.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Image(
+                    painter = painterResource(R.drawable.baseline_arrow_back_ios_new_24),
+                    contentDescription = null,
+                    modifier = Modifier.clickable {
+                        toWebtoonMain(episodeContent.webtoon)
+                    }
+                )
+
+                Text(
+                    text = "   " + episodeContent.title,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
         }
     )
 }

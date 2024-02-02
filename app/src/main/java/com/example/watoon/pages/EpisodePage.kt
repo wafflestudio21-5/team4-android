@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Face
@@ -55,6 +56,9 @@ import com.example.watoon.NavigationDestination
 import com.example.watoon.R
 import com.example.watoon.data.EpisodeContent
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.EpisodeTopBar
+import com.example.watoon.function.MiniButton
+import com.example.watoon.function.MyDialog
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.EpisodeViewModel
 import kotlinx.coroutines.launch
@@ -91,40 +95,17 @@ fun EpisodePage(
     }
 
     Scaffold(
-        topBar = {
-            // TopBar content
-            TopAppBar(
-                modifier = Modifier.height(50.dp),
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Gray),
-                title = {
-                    Text(text = " ")
-                },
-                actions = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ){
-                        IconButton(
-                            onClick = {
-                                toWebtoonMain(episodeContent.webtoon)
-                            }
-                        ){
-                            Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = null)
-                        }
-
-                        Text("  " + episodeContent.title)
-                    }
-
-                }
-            )
-        },
+        topBar = { EpisodeTopBar(toWebtoonMain = toWebtoonMain, episodeContent = episodeContent)},
         bottomBar = {
             BottomAppBar (
                 containerColor = Color.Gray,
+                modifier = Modifier
+                    .height(50.dp),
                 actions = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
                     ){
                         Image(
                             painter = painterResource(R.drawable.baseline_chat_24),
@@ -146,7 +127,8 @@ fun EpisodePage(
                                         makeError(context, e)
                                     }
                                 }
-                            }
+                            },
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
                                 painter = if(episodeContent.liking) painterResource(R.drawable.baseline_favorite_24) else painterResource(R.drawable.baseline_favorite_border_24),
@@ -156,147 +138,146 @@ fun EpisodePage(
                             Text(episodeContent.likedBy.toString())
                         }
 
-
-                        Image(
-                            painter = painterResource(R.drawable.baseline_arrow_back_ios_new_24),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clickable {
-                                    if (prevId != null) {
-                                        scope.launch {
-                                            try {
-                                                viewModel.getEpisodeContent(prevId)
-                                            } catch (e: HttpException) {
-                                                makeError(context, e)
+                        Row {
+                            Image(
+                                painter = painterResource(R.drawable.baseline_arrow_back_ios_new_24),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable {
+                                        if (prevId != null) {
+                                            scope.launch {
+                                                try {
+                                                    viewModel.getEpisodeContent(prevId)
+                                                } catch (e: HttpException) {
+                                                    makeError(context, e)
+                                                }
                                             }
                                         }
-                                    }
-                                },
-                            colorFilter = if(prevId == null) ColorFilter.tint(Color.White) else ColorFilter.tint(Color.Black),
-                        )
+                                    },
+                                colorFilter = if(prevId == null) ColorFilter.tint(Color.DarkGray) else ColorFilter.tint(Color.Black),
+                            )
 
-                        Image(
-                            painter = painterResource(R.drawable.baseline_arrow_forward_ios_24),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clickable {
-                                    if (nextId != null) {
-                                        scope.launch {
-                                            try {
-                                                viewModel.getEpisodeContent(nextId)
-                                            } catch (e: HttpException) {
-                                                makeError(context, e)
+                            Image(
+                                painter = painterResource(R.drawable.baseline_arrow_forward_ios_24),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable {
+                                        if (nextId != null) {
+                                            scope.launch {
+                                                try {
+                                                    viewModel.getEpisodeContent(nextId)
+                                                } catch (e: HttpException) {
+                                                    makeError(context, e)
+                                                }
                                             }
                                         }
-                                    }
-                                },
-                            colorFilter = if(nextId == null) ColorFilter.tint(Color.White) else ColorFilter.tint(Color.Black),
-                        )
+                                    },
+                                colorFilter = if(nextId == null) ColorFilter.tint(Color.DarkGray) else ColorFilter.tint(Color.Black),
+                            )
+                        }
                     }
                 }
             )
         }
     ){
-        Row(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 50.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Row(
-            ){
-                Image(
-                    painter = painterResource(R.drawable.baseline_star_24),
-                    colorFilter = ColorFilter.tint(Color.Red),
-                    contentDescription = ""
-                )
-                Text(episodeContent.totalRating)
-            }
+                .padding(top = 50.dp)
+        ){
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Text(
+                            text = "★ ",
+                            color = Color.Red,
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = episodeContent.totalRating,
+                            fontSize = 20.sp
+                        )
+                    }
 
-            Button(
-                onClick = {showDialog = true}
-            ){
-                Text("별점주기")
+                    MiniButton(text = "별점주기") {
+                        showDialog = true
+                    }
+                }
             }
         }
+
     }
 
-    if(showDialog){
-        AlertDialog(
-            text = {
-                Column{
-                    Row{
-                        RatingStar(1, giveRating) { rating ->
-                            giveRating = rating
-                        }
-                        RatingStar(2, giveRating) { rating ->
-                            giveRating = rating
-                        }
-                        RatingStar(3, giveRating) { rating ->
-                            giveRating = rating
-                        }
-                        RatingStar(4, giveRating) { rating ->
-                            giveRating = rating
-                        }
-                        RatingStar(5, giveRating) { rating ->
-                            giveRating = rating
-                        }
-                    }
-                    Text("$giveRating.00")
-                }
-            },
-            onDismissRequest = {
-                showDialog = false
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        if(giveRating == 0){
-                            Toast.makeText(context, "별점을 주지 않았습니다", Toast.LENGTH_LONG).show()
-                        }
-                        else{
-                            scope.launch {
-                                try {
-                                    viewModel.putEpisodeRate(giveRating)
-                                    showDialog = false
-                                } catch (e: HttpException) {
-                                    makeError(context, e)
-                                }
-                            }
-                        }
-                    }
-                ) {
-                    Text("확인")
-                }
-            },
 
-            dismissButton = {
-                Button(
-                    onClick = {
+    MyDialog(
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Row{
+                    RatingStar(1, giveRating) { rating ->
+                        giveRating = rating
+                    }
+                    RatingStar(2, giveRating) { rating ->
+                        giveRating = rating
+                    }
+                    RatingStar(3, giveRating) { rating ->
+                        giveRating = rating
+                    }
+                    RatingStar(4, giveRating) { rating ->
+                        giveRating = rating
+                    }
+                    RatingStar(5, giveRating) { rating ->
+                        giveRating = rating
+                    }
+                }
+                Text(
+                    text = "\n$giveRating.00\n",
+                    fontSize = 20.sp
+                )
+            }
+        },
+        showDialog = showDialog,
+        onDismiss = { showDialog = false },
+        onConfirm = {
+            if(giveRating == 0){
+                Toast.makeText(context, "별점을 주지 않았습니다", Toast.LENGTH_LONG).show()
+            }
+            else{
+                scope.launch {
+                    try {
+                        viewModel.putEpisodeRate(giveRating)
                         showDialog = false
+                    } catch (e: HttpException) {
+                        makeError(context, e)
                     }
-                ) {
-                    Text("취소")
                 }
-            },
-
-            )
-    }
+            }
+        }
+    )
 }
 
 @Composable
 fun RatingStar(rate: Int, giveRating: Int, onRatingChanged: (Int) -> Unit) {
     val starColor = if (rate <= giveRating) Color.Red else Color.Gray
 
-    Image(
+    Text(
+        text = "★",
+        color = starColor,
         modifier = Modifier
             .clickable {
                 onRatingChanged(rate)
             },
-        painter = painterResource(R.drawable.baseline_star_24),
-        colorFilter = ColorFilter.tint(starColor),
-        contentDescription = ""
+        fontSize = 30.sp
     )
+
 }

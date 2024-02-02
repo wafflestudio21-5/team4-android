@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.watoon.R
 import com.example.watoon.data.Webtoon
+import com.example.watoon.ui.theme.Watoon
 
 @Composable
 fun BasicWebtoonItem(
@@ -47,7 +49,7 @@ fun BasicWebtoonItem(
 }
 
 @Composable
-fun MainWebtoonItem(
+fun ToMainWebtoonItem(
     webtoon: Webtoon,
     toWebtoonMain: (Webtoon) -> Unit
 ) {
@@ -82,8 +84,7 @@ private fun WebtoonDetails(webtoon: Webtoon) {
             modifier = Modifier.padding(horizontal = 10.dp)
         ) {
             Text(
-                text = if(webtoon.title.length>=10) webtoon.title.substring(0 .. 10) + " ..."
-                else webtoon.title,
+                text = stringCut(webtoon.title),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.ExtraBold
             )
@@ -110,6 +111,74 @@ private fun WebtoonDetails(webtoon: Webtoon) {
                 )
             }
 
+        }
+    }
+}
+
+
+@Composable
+fun MainWebtoonItem(webtoon: Webtoon, toWebtoonMain : (Webtoon) -> Unit) {
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+
+    Column(
+        modifier = Modifier
+            .clickable {
+                toWebtoonMain(webtoon)
+            }
+    ) {
+        AsyncImage(
+            model = webtoon.titleImage,
+            contentDescription = null,
+            modifier = Modifier
+                .size(screenWidth/3, screenWidth/3)
+        )
+        Text(
+            text = stringCut(webtoon.title),
+            color = Color.Black,
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier.padding(horizontal = 5.dp)
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            if(webtoon.title != ""){
+                if(webtoon.subscribing){
+                    Text(
+                        text = "구독",
+                        fontSize = 10.sp,
+                        color = Watoon,
+                        modifier = Modifier.padding(horizontal = 5.dp),
+                        fontWeight = FontWeight.Bold
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.baseline_check_24),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(Watoon),
+                        modifier = Modifier
+                            .size(10.dp, 10.dp)
+                    )
+                }
+                else{
+                    Text(
+                        text = stringCut(webtoon.author.nickname) + " ",
+                        fontSize = 10.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(horizontal = 5.dp),
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.baseline_star_24),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(Color.Gray),
+                        modifier = Modifier
+                            .size(10.dp, 10.dp)
+                    )
+                    Text(
+                        text = webtoon.totalRating,
+                        fontSize = 10.sp,
+                        color = Color.Gray
+                    )
+                }
+            }
         }
     }
 }

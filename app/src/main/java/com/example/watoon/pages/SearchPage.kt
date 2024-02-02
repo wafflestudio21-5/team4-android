@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.example.watoon.NavigationDestination
 import com.example.watoon.R
 import com.example.watoon.data.Webtoon
-import com.example.watoon.function.MainWebtoonItem
+import com.example.watoon.function.ToMainWebtoonItem
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.UploadViewModel
 import kotlinx.coroutines.launch
@@ -104,7 +104,7 @@ fun SearchPage(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(searchWebtoonList) {
-                MainWebtoonItem(webtoon = it, toWebtoonMain = toWebtoonMain)
+                ToMainWebtoonItem(webtoon = it, toWebtoonMain = toWebtoonMain)
             }
             if (isLoading) {
                 item {
