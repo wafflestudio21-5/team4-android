@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.MainWebtoonItem
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.WebtoonsViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +37,6 @@ import retrofit2.HttpException
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserPage(toWebtoonMain : (Webtoon) -> Unit) {
     val viewModel:WebtoonsViewModel = hiltViewModel()
@@ -51,23 +51,12 @@ fun UserPage(toWebtoonMain : (Webtoon) -> Unit) {
             makeError(context, e)
         }
     }
-
     LazyColumn(
+        modifier = Modifier
+            .padding(vertical = 15.dp)
     ){
         items(subScribeWebtoons){
-            WebtoonItem(toWebtoonMain, it)
+            MainWebtoonItem(it, toWebtoonMain)
         }
     }
-}
-
-@Composable
-fun WebtoonItem(toWebtoonMain : (Webtoon) -> Unit, webtoon: Webtoon){
-    Row(
-        modifier = Modifier.clickable {
-            toWebtoonMain(webtoon)
-        }
-    ) {
-        Text(webtoon.title)
-    }
-
 }

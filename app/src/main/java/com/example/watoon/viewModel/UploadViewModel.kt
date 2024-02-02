@@ -37,7 +37,7 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
         if(tag1 != "") tags = tags.plus(Tags(tag1))
         if(tag2 != "") tags = tags.plus(Tags(tag2))
 
-        val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags, titleImage.toString())
+        val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags, null)
         api.uploadWebtoon(getToken(), uploadWebtoonRequest)
     }
 

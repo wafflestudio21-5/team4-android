@@ -112,6 +112,7 @@ fun TwoButtonTopBar(text:String, destination:String, destination2: String, onEnt
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainBasicTopBar(onEnter: (String) -> Unit){
