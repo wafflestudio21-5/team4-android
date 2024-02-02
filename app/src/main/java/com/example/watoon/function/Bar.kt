@@ -17,6 +17,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -230,4 +232,63 @@ fun EpisodeTopBar(toWebtoonMain:(Webtoon) -> Unit, episodeContent:EpisodeContent
 
         }
     )
+}
+
+
+@Composable
+fun CommentTopBar(onClick: () -> Unit, text: String, commentNum: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.DarkGray),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(R.drawable.baseline_arrow_back_ios_new_24),
+            contentDescription = null,
+            modifier = Modifier
+                .padding(8.dp)
+                .clickable {
+                    onClick()
+                },
+            colorFilter = ColorFilter.tint(Color.White)
+        )
+        Text(
+            text = "   $text $commentNum",
+            color = Color.White
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CommentBottomBar(
+    content: String,
+    onContentChange: (String) -> Unit,
+    text:String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextField(
+            value = content,
+            onValueChange = { onContentChange(it) },
+            label = { Text(text) },
+            modifier = Modifier
+                .padding(8.dp)
+                .weight(8f),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                placeholderColor = Color.LightGray
+            )
+        )
+
+        MiniButton(text = "등록") {
+            onClick()
+        }
+    }
 }
