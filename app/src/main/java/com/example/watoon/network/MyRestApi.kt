@@ -64,7 +64,7 @@ interface MyRestAPI {
         @Part("description") description: RequestBody,
         @Part("uploadDays") uploadDays: RequestBody,
         @Part("tags") tags: RequestBody,
-        @Part image: MultipartBody.Part
+        @Part image: MultipartBody.Part?
         //@Body data: UploadWebtoonRequest
     )
 

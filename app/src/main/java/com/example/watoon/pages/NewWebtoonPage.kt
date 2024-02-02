@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.documentfile.provider.DocumentFile
+//import androidx.documentfile.provider.DocumentFile
 import com.example.watoon.NavigationDestination
 import com.example.watoon.function.BasicTopBar
 import com.example.watoon.function.MyButton
@@ -182,7 +182,7 @@ fun NewWebtoonPage (viewModel:UploadViewModel, onEnter: (String) -> Unit) {
             isLoading = true
             scope.launch {
                 try {
-                    viewModel.uploadWebtoon(title, description, uploadDays, tag1, tag2, selectedImageUri)
+                    viewModel.uploadWebtoon(context, title, description, uploadDays, tag1, tag2, selectedImageUri)
                     Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
                     title = ""
                     description = ""
