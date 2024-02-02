@@ -35,11 +35,11 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
 
     var episodeTitle by remember { mutableStateOf("") }
     var episodeNumber by remember { mutableStateOf("")}
-    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedFileUris by remember { mutableStateOf<MutableList<Uri>>(mutableListOf()) }
 
     val chooseFile = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? -> selectedFileUri = uri
+    ) { uri: Uri? -> if(uri!=null) selectedFileUris.add(uri)
     }
 
     val context = LocalContext.current
@@ -73,21 +73,22 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
         UploadButton(
             mini = false,
             chooseFile = chooseFile,
-            onFileSelected = { uri -> selectedFileUri = uri }
+            onFileSelected = { uri -> if(uri!=null) selectedFileUris.add(uri) }
         )
 
-        if (selectedFileUri != null) {
-            Text("Selected File: ${getFileName(selectedFileUri!!)}")
+        for(uri in selectedFileUris){
+            Text("Selected File: ${getFileName(uri)}")
         }
 
         MyButton(text = "업로드") {
             isLoading = true
             scope.launch{
                 try {
-                    viewModel.uploadEpisode(episodeTitle, episodeNumber)
+                    viewModel.uploadEpisode(context, episodeTitle, episodeNumber, selectedFileUris)
                     Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
                     episodeTitle = ""
                     episodeNumber = ""
+                    selectedFileUris = mutableListOf()
                 } catch (e: HttpException) {
                     makeError(context, e)
                 } finally {

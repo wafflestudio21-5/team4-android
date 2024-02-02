@@ -46,19 +46,36 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
 
     suspend fun uploadWebtoon(context: Context, title : String, description : String, uploadDays : List<String>, tag1 : String, tag2 : String, selectedImageUri: Uri?){
         val uploadDaysTrimmed = uploadDays.drop(1)
-        //val uploadDaysList = uploadDaysTrimmed.map { UploadDays(it) }
+        val uploadDaysList = uploadDaysTrimmed.map { UploadDays(it) }
 
-        var tags : List<String> = mutableListOf()
-        if(tag1 != "") tags = tags.plus(tag1)
-        if(tag2 != "") tags = tags.plus(tag2)
+        var tags : List<Tag> = mutableListOf()
+        if(tag1 != "") tags = tags.plus(Tag(tag1))
+        if(tag2 != "") tags = tags.plus(Tag(tag2))
 
-        //val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags)
+        val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags)
+
         //val jsonObject = JSONObject(uploadWebtoonRequest)
 
         val titleJson = title.toRequestBody("application/json".toMediaTypeOrNull())
         val descriptionJson = description.toRequestBody("applicaton/json".toMediaTypeOrNull())
-        val uploadDaysJson = createListRequestBody(uploadDaysTrimmed, "name")
+
+        /*val uploadDaysJson = createListRequestBody(uploadDaysTrimmed, "name")
         val tagsJson = createListRequestBody(tags, "content")
+        val uploadDaysJson = mutableListOf<RequestBody>()
+        for(word in uploadDaysTrimmed){
+            uploadDaysJson.add(word.toRequestBody("application/json".toMediaTypeOrNull()))
+        }
+        val tagsJson = mutableListOf<RequestBody>()
+        for(word in tags){
+            tagsJson.add(word.toRequestBody("application/json".toMediaTypeOrNull()))
+        }
+        val uploadDaysParts = uploadDays.map { day ->
+            MultipartBody.Part.createFormData("uploadDays", day)
+        }
+
+        val tagsParts = tags.map { tag ->
+            MultipartBody.Part.createFormData("tags", tag)
+        }*/
 
         val file = FileUtil.createTempFile(context, "image.jpg")
         var imagePart: MultipartBody.Part? = null
@@ -71,19 +88,30 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
             imagePart = MultipartBody.Part.createFormData("titleImage", newFile.name, requestFile)
         }
 
-        api.uploadWebtoon(getToken(), titleJson, descriptionJson, uploadDaysJson, tagsJson, imagePart)
+        val id = api.uploadWebtoon(getToken(), uploadWebtoonRequest).id.toString()
+        api.putWebtoonImage(getToken(), id, titleJson, descriptionJson, imagePart)
     }
 
-    suspend fun uploadEpisode(title: String, episodeNumber: String){
+    suspend fun uploadEpisode(context: Context, title: String, episodeNumber: String, selectedImageUris: List<Uri>){
         var episodeNumberInt: Int? = episodeNumber.toIntOrNull()
         if(episodeNumberInt==null) episodeNumberInt = -1
-        val uploadEpisodeRequest = UploadEpisodeRequest(title, episodeNumberInt)
+        val title_json = title.toRequestBody("application/json".toMediaTypeOrNull())
+        val episodeNumber_json = episodeNumber.toRequestBody("applicaton/json".toMediaTypeOrNull())
 
-        Log.d("final webtoonId", webtoonId.toString())
+        val imageParts: List<MultipartBody.Part> = selectedImageUris?.mapNotNull { uri ->
+            val file = FileUtil.createTempFile(context, "image.jpg")
+            FileUtil.copyToFile(context, uri, file)
+            val newFile = File(file.absolutePath)
+
+            val requestFile = newFile.asRequestBody("image/*".toMediaTypeOrNull())
+            MultipartBody.Part.createFormData("images", newFile.name, requestFile)
+        } ?: emptyList()
+
         api.uploadEpisode(
-            getToken(),
+            "access=" + MyApp.preferences.getToken("token", ""),
             webtoonId.value.toString(),
-            uploadEpisodeRequest)
+            title_json, episodeNumber_json, imageParts
+        )
     }
 
     suspend fun search(search : String){

@@ -16,7 +16,9 @@ import com.example.watoon.data.RecommentResponse
 import com.example.watoon.data.RegisterRequest
 import com.example.watoon.data.UploadEpisodeRequest
 import com.example.watoon.data.UploadWebtoonRequest
+import com.example.watoon.data.UploadWebtoonResponse
 import com.example.watoon.data.Webtoon
+import com.example.watoon.data.WebtoonContent
 import com.example.watoon.data.WebtoonDetailRequest
 import com.example.watoon.data.WebtoonListRequest
 import okhttp3.MultipartBody
@@ -56,24 +58,36 @@ interface MyRestAPI {
         @Header("Cookie") token: String,
     ) : List<Webtoon>
 
-    @Multipart
+    //@Multipart
     @POST("/api/webtoonList")
     suspend fun uploadWebtoon(
         @Header("Cookie") token: String,
-        //@Part("body") body: RequestBody,
+        /*@Part("title") title: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("uploadDays") uploadDays: List<MultipartBody.Part>,
+        @Part("tags") tags: List<MultipartBody.Part>,
+        @Part image: MultipartBody.Part?*/
+        @Body data: UploadWebtoonRequest
+    ) : UploadWebtoonResponse
+
+    @Multipart
+    @PUT("/api/webtoon/{id}")
+    suspend fun putWebtoonImage(
+        @Header("Cookie") token: String,
+        @Path(value = "id") id: String,
         @Part("title") title: RequestBody,
         @Part("description") description: RequestBody,
-        @Part("uploadDays") uploadDays: RequestBody,
-        @Part("tags") tags: RequestBody,
         @Part image: MultipartBody.Part?
-        //@Body data: UploadWebtoonRequest
     )
 
+    @Multipart
     @POST("/api/webtoon/{id}/episode")
     suspend fun uploadEpisode(
         @Header("Cookie") token: String,
         @Path(value = "id") id: String,
-        @Body data: UploadEpisodeRequest
+        @Part("title") title: RequestBody,
+        @Part("episodeNumber") episodeNumber: RequestBody,
+        @Part images: List<MultipartBody.Part?>
     )
 
     @GET("/api/webtoonList/{list_type}")
