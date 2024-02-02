@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImage
 import com.example.watoon.NavigationDestination
 import com.example.watoon.R
 import com.example.watoon.data.DayOfWeek
@@ -251,8 +252,15 @@ fun EpisodeItem(episode:Episode, toEpisode: (Episode) -> Unit){
                     end = Offset(size.width, size.height),
                     strokeWidth = 2.dp.toPx(),
                 )
-            }
+            },
+        verticalAlignment = Alignment.CenterVertically
     ){
+        AsyncImage(
+            model = episode.thumbnail,
+            contentDescription = null,
+            modifier = Modifier
+                .size(60.dp,60.dp)
+        )
         Column {
             Text(
                 text = episode.episodeNumber.toString() + "화 " + episode.title,

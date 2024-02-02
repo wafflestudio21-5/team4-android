@@ -10,4 +10,5 @@ data class Episode(
     @Json(name = "episodeNumber") val episodeNumber:Int = 0,
     @Json(name = "totalRating") val totalRating:String = "",
     @Json(name = "releasedDate") val releasedDate:String = "",
+    @Json(name = "thumbnail") val thumbnail:String = ""
 )
