@@ -133,6 +133,7 @@ fun MenuButton(
 
 @Composable
 fun UploadButton(
+    mini:Boolean,
     chooseFile: ActivityResultLauncher<String>,
     onFileSelected: (Uri?) -> Unit
 ){
@@ -147,7 +148,7 @@ fun UploadButton(
         horizontalArrangement = Arrangement.Center
     ) {
         Column {
-            Text("\n")
+            if(!mini) Text("\n")
             Row {
                 Image(
                     painter = painterResource(R.drawable.baseline_upload_24),
@@ -155,7 +156,8 @@ fun UploadButton(
                 )
                 Text("  파일 업로드 하기")
             }
-            Text("\n")
+            if(!mini) Text("\n")
         }
     }
 }
+

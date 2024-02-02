@@ -1,5 +1,6 @@
 package com.example.watoon.viewModel
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -28,18 +29,16 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
             MyApp.preferences.getToken("id", ""))
     }
 
-    suspend fun uploadWebtoon(title : String, description : String, uploadDays : Set<String>, tag1 : String, tag2 : String){
+    suspend fun uploadWebtoon(title : String, description : String, uploadDays : List<String>, tag1 : String, tag2 : String, titleImage: Uri?){
         val uploadDaysTrimmed = uploadDays.drop(1)
         val uploadDaysList = uploadDaysTrimmed.map { UploadDays(it) }
 
         var tags : List<Tags> = mutableListOf()
         if(tag1 != "") tags = tags.plus(Tags(tag1))
         if(tag2 != "") tags = tags.plus(Tags(tag2))
-        Log.d("tag - viewModel", tags.toString())
 
-        //title image 수정 필요
-        val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags, "")
-        api.uploadWebtoon("access=" + MyApp.preferences.getToken("token", ""), uploadWebtoonRequest)
+        val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags, titleImage.toString())
+        api.uploadWebtoon(getToken(), uploadWebtoonRequest)
     }
 
     suspend fun uploadEpisode(title: String, episodeNumber: String){

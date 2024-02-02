@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.documentfile.provider.DocumentFile
 import com.example.watoon.NavigationDestination
 import com.example.watoon.function.BasicTopBar
 import com.example.watoon.function.MyButton
@@ -70,6 +71,7 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
 
         MyText(text = "파일 첨부")
         UploadButton(
+            mini = false,
             chooseFile = chooseFile,
             onFileSelected = { uri -> selectedFileUri = uri }
         )
@@ -115,3 +117,4 @@ fun getFileName(uri: Uri): String {
     }
     return "Unknown"
 }
+

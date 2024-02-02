@@ -3,8 +3,10 @@ package com.example.watoon.pages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImage
 import com.example.watoon.NavigationDestination
 import com.example.watoon.viewModel.WebtoonsViewModel
 import com.example.watoon.data.User
@@ -125,12 +128,16 @@ fun RowOfWebtoon(
 
 @Composable
 fun Webtoon(webtoon: Webtoon, toWebtoonMain : (Webtoon) -> Unit) {
-    Row(
+    Column(
         modifier = Modifier
             .clickable {
                 toWebtoonMain(webtoon)
             }
     ) {
+        AsyncImage(
+            model = webtoon.titleImage,
+            contentDescription = null
+        )
         Text(
             text = webtoon.title,
             color = Color.Black

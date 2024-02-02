@@ -40,7 +40,6 @@ import retrofit2.HttpException
 @Composable
 fun UserPage(toWebtoonMain : (Webtoon) -> Unit) {
     val viewModel:WebtoonsViewModel = hiltViewModel()
-    var isComment by remember { mutableStateOf(false) }
 
     val subScribeWebtoons by viewModel.subscribeWebtoonList.collectAsState()
     val context = LocalContext.current
@@ -53,47 +52,10 @@ fun UserPage(toWebtoonMain : (Webtoon) -> Unit) {
         }
     }
 
-    Scaffold (
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = " ")
-                },
-                actions = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ){
-                        Text(
-                            text = "관심 웹툰",
-                            color = Color.Black,
-                            modifier = Modifier
-                                .clickable {
-                                    isComment = false
-                                }
-                        )
-                        Text(
-                            text= "댓글",
-                            color = Color.Black,
-                            modifier = Modifier
-                                .clickable {
-                                    isComment = true
-                                }
-                        )
-                    }
-                },
-            )
-        }
+    LazyColumn(
     ){
-        LazyColumn(
-            //padding 방법 추가 고려 필요
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 60.dp)
-        ){
-            items(subScribeWebtoons){
-                WebtoonItem(toWebtoonMain, it)
-            }
+        items(subScribeWebtoons){
+            WebtoonItem(toWebtoonMain, it)
         }
     }
 }
