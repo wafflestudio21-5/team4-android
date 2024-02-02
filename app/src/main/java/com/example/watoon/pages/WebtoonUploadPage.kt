@@ -1,7 +1,5 @@
 package com.example.watoon.pages
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,11 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,18 +19,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.watoon.NavigationDestination
 import com.example.watoon.data.Webtoon
-import com.example.watoon.function.TwoButtonTopBar
+import com.example.watoon.function.BasicTopBar
+import com.example.watoon.function.BasicWebtoonItem
+import com.example.watoon.function.MiniButton
+import com.example.watoon.function.MyDialog
 import com.example.watoon.function.makeError
 import com.example.watoon.viewModel.UploadViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
@@ -67,7 +59,7 @@ fun WebtoonUploadPage(viewModel:UploadViewModel, onEnter: (String) -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        TwoButtonTopBar(
+        BasicTopBar(
             text = "나의 웹툰 목록",
             destination = NavigationDestination.Main,
             destination2 = NavigationDestination.NewWebtoon,
@@ -81,9 +73,8 @@ fun WebtoonUploadPage(viewModel:UploadViewModel, onEnter: (String) -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(myWebtoonList) {webtoon ->
-                WebtoonItem(
+                MyWebtoonItem(
                     viewModel = viewModel,
-                    delete = true,
                     webtoon = webtoon,
                     onClick = {
                         viewModel.webtoonId.value = webtoon.id
@@ -106,54 +97,41 @@ fun WebtoonUploadPage(viewModel:UploadViewModel, onEnter: (String) -> Unit) {
 }
 
 @Composable
-fun WebtoonItem(viewModel: UploadViewModel, delete: Boolean, webtoon: Webtoon, onClick: () -> Unit) {
+fun MyWebtoonItem(viewModel: UploadViewModel, webtoon: Webtoon, onClick: () -> Unit) {
 
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var showDialog by remember { mutableStateOf(false) }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .border(1.dp, Color.LightGray, RoundedCornerShape(5.dp))
-            .clickable {
-                onClick()
-            },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+    Column(
+        horizontalAlignment = Alignment.End
     ) {
-        //Webtoon 썸네일 필요
-
-        Column(
-        ) {
-            Text(
-                text = webtoon.title,
-                modifier = Modifier.padding(10.dp),
-                fontSize = 23.sp
-            )
-            Text(
-                text = "등록 날짜 : " + webtoon.releasedDate,
-                modifier = Modifier.padding(10.dp),
-                fontSize = 15.sp
-            )
-        }
-
-        //없애도 되는 기능?
-        if(delete) {
-            IconButton(
-                onClick = {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        try {
-                            viewModel.deleteWebtoon(webtoon.id)
-                            viewModel.loadMyWebtoon()
-                        } catch (e: HttpException) {
-                           makeError(context, e)
-                        }
-                    }
-                },
-            ) {
-                Icon(imageVector = Icons.Default.Clear, contentDescription = null)
-            }
+        BasicWebtoonItem(webtoon, onClick)
+        MiniButton(text = "삭제") {
+            showDialog = true
         }
     }
-}
 
+    MyDialog(
+        text = {
+            Row (
+                horizontalArrangement = Arrangement.Center
+            ){
+                Text("정말 지우시겠습니까?")
+            }
+               },
+        showDialog = showDialog,
+        onDismiss = { showDialog = false },
+        onConfirm = {
+            scope.launch {
+                try {
+                    viewModel.deleteWebtoon(webtoon.id)
+                    viewModel.loadMyWebtoon()
+                } catch (e: HttpException) {
+                    makeError(context, e)
+                }
+            }
+            showDialog = false
+        }
+    )
+}

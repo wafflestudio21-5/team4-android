@@ -3,6 +3,7 @@ package com.example.watoon.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.watoon.data.Webtoon
+import com.example.watoon.function.getToken
 import com.example.watoon.network.MyRestAPI
 import java.lang.Exception
 
@@ -17,7 +18,7 @@ class WebtoonsPagingSource(
     override suspend fun load(params: LoadParams<String>): LoadResult<String, Webtoon> {
         return try {
             val cursor = params.key
-            val response = api.getWebtoonList(type,cursor)
+            val response = api.getWebtoonList(getToken(), type,cursor)
 
             val previousIndex = response.previous.toString().indexOf("cursor=")
             val nextIndex = response.next.toString().indexOf("cursor=")

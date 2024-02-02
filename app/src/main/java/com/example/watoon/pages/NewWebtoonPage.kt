@@ -194,6 +194,7 @@ fun NewWebtoonPage (viewModel:UploadViewModel, onEnter: (String) -> Unit) {
                     tag1 = ""
                     tag2 = ""
                     selectedImageUri = null
+                    onEnter(NavigationDestination.WebtoonUpload)
                 } catch (e: HttpException) {
                     makeError(context, e)
                 } finally {

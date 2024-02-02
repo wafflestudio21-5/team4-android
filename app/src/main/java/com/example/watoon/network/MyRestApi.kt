@@ -93,6 +93,7 @@ interface MyRestAPI {
 
     @GET("/api/webtoonList/{list_type}")
     suspend fun getWebtoonList(
+        @Header("Cookie") token: String,
         @Path(value = "list_type") type:String,
         @Query(value = "cursor") cursor:String?
     ):WebtoonListRequest
