@@ -49,7 +49,7 @@ fun RecommentPage (viewModel: EpisodeViewModel,onEnter: (String) -> Unit) {
         CommentTopBar(
             onClick = { onEnter(NavigationDestination.Comment) },
             commentNum = commentList.itemCount.toString(),
-            text = "답글ㅏ"
+            text = "답글"
         )
 
         LazyColumn(
