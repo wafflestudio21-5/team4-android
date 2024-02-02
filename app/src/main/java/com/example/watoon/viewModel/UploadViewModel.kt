@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.watoon.MyApp
 import com.example.watoon.data.RegisterRequest
+import com.example.watoon.data.Tag
 import com.example.watoon.data.Tags
 import com.example.watoon.data.UploadDays
 import com.example.watoon.data.UploadEpisodeRequest
@@ -14,8 +15,14 @@ import com.example.watoon.data.UploadWebtoonRequest
 import com.example.watoon.data.Webtoon
 import com.example.watoon.function.getToken
 import com.example.watoon.network.MyRestAPI
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,12 +40,17 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
         val uploadDaysTrimmed = uploadDays.drop(1)
         val uploadDaysList = uploadDaysTrimmed.map { UploadDays(it) }
 
-        var tags : List<Tags> = mutableListOf()
-        if(tag1 != "") tags = tags.plus(Tags(tag1))
-        if(tag2 != "") tags = tags.plus(Tags(tag2))
+        var tags : List<Tag> = mutableListOf()
+        if(tag1 != "") tags = tags.plus(Tag(tag1))
+        if(tag2 != "") tags = tags.plus(Tag(tag2))
 
-        val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags, titleImage.toString())
-        api.uploadWebtoon(getToken(), uploadWebtoonRequest)
+        val titleJson = title.toRequestBody("application/json".toMediaTypeOrNull())
+        val descriptionJson = description.toRequestBody("applicaton/json".toMediaTypeOrNull())
+        val uploadDaysJson = createListRequestBody(uploadDays)
+        val tagsJson = createTagListRequestBody(tags)
+
+        //val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags, titleImage.toString())
+        api.uploadWebtoon(getToken(), titleJson, descriptionJson, uploadDaysJson, tagsJson, image)
     }
 
     suspend fun uploadEpisode(title: String, episodeNumber: String){
@@ -60,4 +72,18 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
     suspend fun deleteWebtoon(id : Int){
         api.deleteWebtoon("access=" + MyApp.preferences.getToken("token", ""), id.toString())
     }
+}
+
+fun createListRequestBody(stringList: List<String>): RequestBody {
+    val joinedString = stringList.joinToString(separator = ",") // Join strings with a comma or your preferred separator
+    return joinedString.toRequestBody("applidcation/json".toMediaTypeOrNull())
+}
+
+fun createTagListRequestBody(tagList: List<Tag>): RequestBody {
+    val moshi = Moshi.Builder().build()
+    val listType = Types.newParameterizedType(List::class.java, Tag::class.java)
+    val adapter: JsonAdapter<List<Tag>> = moshi.adapter(listType)
+
+    val json = adapter.toJson(tagList)
+    return json.toRequestBody("application/json".toMediaTypeOrNull())
 }
