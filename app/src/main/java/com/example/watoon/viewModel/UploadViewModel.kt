@@ -110,9 +110,9 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
             thumbnail = MultipartBody.Part.createFormData("thumbnail", newFile.name, requestFile)
         }
 
-
+        var index = 0
         val imageParts: List<MultipartBody.Part> = selectedImageUris?.mapNotNull { uri ->
-            val file = FileUtil.createTempFile(context, "image.jpg")
+            val file = FileUtil.createTempFile(context, "image" + (index++) + ".jpg")
             FileUtil.copyToFile(context, uri, file)
             val newFile = File(file.absolutePath)
 
