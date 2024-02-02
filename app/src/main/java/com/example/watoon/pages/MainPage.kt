@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -133,10 +134,11 @@ fun Webtoon(webtoon: Webtoon, toWebtoonMain : (Webtoon) -> Unit) {
             .clickable {
                 toWebtoonMain(webtoon)
             }
+            .widthIn(100.dp, 100.dp)
     ) {
         AsyncImage(
             model = webtoon.titleImage,
-            contentDescription = null
+            contentDescription = null,
         )
         Text(
             text = webtoon.title,

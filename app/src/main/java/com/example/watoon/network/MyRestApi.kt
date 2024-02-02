@@ -87,6 +87,7 @@ interface MyRestAPI {
         @Path(value = "id") id: String,
         @Part("title") title: RequestBody,
         @Part("episodeNumber") episodeNumber: RequestBody,
+        @Part image: MultipartBody.Part?,
         @Part images: List<MultipartBody.Part?>
     )
 

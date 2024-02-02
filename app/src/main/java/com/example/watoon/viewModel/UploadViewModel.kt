@@ -92,11 +92,24 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
         api.putWebtoonImage(getToken(), id, titleJson, descriptionJson, imagePart)
     }
 
-    suspend fun uploadEpisode(context: Context, title: String, episodeNumber: String, selectedImageUris: List<Uri>){
+    suspend fun uploadEpisode(context: Context, title: String, episodeNumber: String, selectedImageUris: List<Uri>,
+                              thumbnailUri: Uri?){
         var episodeNumberInt: Int? = episodeNumber.toIntOrNull()
         if(episodeNumberInt==null) episodeNumberInt = -1
         val title_json = title.toRequestBody("application/json".toMediaTypeOrNull())
         val episodeNumber_json = episodeNumber.toRequestBody("applicaton/json".toMediaTypeOrNull())
+
+        val file = FileUtil.createTempFile(context, "image.jpg")
+        var thumbnail: MultipartBody.Part? = null
+
+        if(thumbnailUri!=null) {
+            FileUtil.copyToFile(context, thumbnailUri, file)
+            val newFile = File(file.absolutePath)
+
+            val requestFile = newFile.asRequestBody("image/*".toMediaTypeOrNull())
+            thumbnail = MultipartBody.Part.createFormData("thumbnail", newFile.name, requestFile)
+        }
+
 
         val imageParts: List<MultipartBody.Part> = selectedImageUris?.mapNotNull { uri ->
             val file = FileUtil.createTempFile(context, "image.jpg")
@@ -110,7 +123,7 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
         api.uploadEpisode(
             "access=" + MyApp.preferences.getToken("token", ""),
             webtoonId.value.toString(),
-            title_json, episodeNumber_json, imageParts
+            title_json, episodeNumber_json, thumbnail, imageParts
         )
     }
 

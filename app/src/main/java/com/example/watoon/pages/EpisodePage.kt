@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Face
@@ -51,6 +52,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
 import com.example.watoon.NavigationDestination
 import com.example.watoon.R
 import com.example.watoon.data.EpisodeContent
@@ -199,27 +202,40 @@ fun EpisodePage(
             )
         }
     ){
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 50.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Row(
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ){
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
             ){
-                Image(
-                    painter = painterResource(R.drawable.baseline_star_24),
-                    colorFilter = ColorFilter.tint(Color.Red),
-                    contentDescription = ""
-                )
-                Text(episodeContent.totalRating)
+                items(3){
+                    AsyncImage(
+                        model = episodeContent.imageUrl,
+                        contentDescription = null,
+                    )
+                }
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 50.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Row(
+                ){
+                    Image(
+                        painter = painterResource(R.drawable.baseline_star_24),
+                        colorFilter = ColorFilter.tint(Color.Red),
+                        contentDescription = ""
+                    )
+                    Text(episodeContent.totalRating)
+                }
 
-            Button(
-                onClick = {showDialog = true}
-            ){
-                Text("별점주기")
+                Button(
+                    onClick = {showDialog = true}
+                ){
+                    Text("별점주기")
+                }
             }
         }
     }
