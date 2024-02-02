@@ -16,16 +16,22 @@ import com.example.watoon.data.RecommentResponse
 import com.example.watoon.data.RegisterRequest
 import com.example.watoon.data.UploadEpisodeRequest
 import com.example.watoon.data.UploadWebtoonRequest
+import com.example.watoon.data.UploadWebtoonResponse
 import com.example.watoon.data.Webtoon
+import com.example.watoon.data.WebtoonContent
 import com.example.watoon.data.WebtoonDetailRequest
 import com.example.watoon.data.WebtoonListRequest
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 import retrofit2.http.Query
@@ -52,17 +58,37 @@ interface MyRestAPI {
         @Header("Cookie") token: String,
     ) : List<Webtoon>
 
+    //@Multipart
     @POST("/api/webtoonList")
     suspend fun uploadWebtoon(
         @Header("Cookie") token: String,
+        /*@Part("title") title: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("uploadDays") uploadDays: List<MultipartBody.Part>,
+        @Part("tags") tags: List<MultipartBody.Part>,
+        @Part image: MultipartBody.Part?*/
         @Body data: UploadWebtoonRequest
+    ) : UploadWebtoonResponse
+
+    @Multipart
+    @PUT("/api/webtoon/{id}")
+    suspend fun putWebtoonImage(
+        @Header("Cookie") token: String,
+        @Path(value = "id") id: String,
+        @Part("title") title: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part image: MultipartBody.Part?
     )
 
+    @Multipart
     @POST("/api/webtoon/{id}/episode")
     suspend fun uploadEpisode(
         @Header("Cookie") token: String,
         @Path(value = "id") id: String,
-        @Body data: UploadEpisodeRequest
+        @Part("title") title: RequestBody,
+        @Part("episodeNumber") episodeNumber: RequestBody,
+        @Part image: MultipartBody.Part?,
+        @Part images: List<MultipartBody.Part?>
     )
 
     @GET("/api/webtoonList/{list_type}")

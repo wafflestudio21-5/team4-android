@@ -39,7 +39,7 @@ class NetworkModule {
         moshi: Moshi,
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://watoon-env1.eba-ytauqqvt.ap-northeast-2.elasticbeanstalk.com")
+            .baseUrl("https://watoon-wf.p-e.kr/")
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

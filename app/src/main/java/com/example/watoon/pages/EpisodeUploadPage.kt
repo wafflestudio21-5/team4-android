@@ -35,11 +35,17 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
 
     var episodeTitle by remember { mutableStateOf("") }
     var episodeNumber by remember { mutableStateOf("")}
-    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedFileUris by remember { mutableStateOf<MutableList<Uri>>(mutableListOf()) }
+    var thumbnailUri by remember { mutableStateOf<Uri?>(null) }
 
     val chooseFile = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? -> selectedFileUri = uri
+    ) { uri: Uri? -> if(uri!=null) selectedFileUris.add(uri)
+    }
+    val thumbnail = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ){
+        uri: Uri? -> thumbnailUri = uri
     }
 
     val context = LocalContext.current
@@ -69,25 +75,37 @@ fun EpisodeUploadPage(viewModel:UploadViewModel,onEnter: (String) -> Unit) {
             visible = true
         )
 
+        MyText(text = "썸네일 추가")
+        UploadButton(
+            mini = false,
+            chooseFile = thumbnail,
+            onFileSelected = { uri -> thumbnailUri = uri }
+        )
+
+        if(thumbnailUri!=null){
+            Text("Selected File: ${getFileName(thumbnailUri!!)}")
+        }
+
         MyText(text = "파일 첨부")
         UploadButton(
             mini = false,
             chooseFile = chooseFile,
-            onFileSelected = { uri -> selectedFileUri = uri }
+            onFileSelected = { uri -> if(uri!=null) selectedFileUris.add(uri) }
         )
 
-        if (selectedFileUri != null) {
-            Text("Selected File: ${getFileName(selectedFileUri!!)}")
+        for(uri in selectedFileUris){
+            Text("Selected File: ${getFileName(uri)}")
         }
 
         MyButton(text = "업로드") {
             isLoading = true
             scope.launch{
                 try {
-                    viewModel.uploadEpisode(episodeTitle, episodeNumber)
+                    viewModel.uploadEpisode(context, episodeTitle, episodeNumber, selectedFileUris, thumbnailUri)
                     Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
                     episodeTitle = ""
                     episodeNumber = ""
+                    selectedFileUris = mutableListOf()
                 } catch (e: HttpException) {
                     makeError(context, e)
                 } finally {
@@ -117,4 +135,3 @@ fun getFileName(uri: Uri): String {
     }
     return "Unknown"
 }
-
