@@ -16,7 +16,7 @@ class Repository @Inject constructor(
 ) {
     fun getWebtoons(type:String) = Pager(
         config = PagingConfig(
-            pageSize = 10
+            pageSize = 20
         ),
         pagingSourceFactory = {
             WebtoonsPagingSource(type = type,api = api)
@@ -34,10 +34,19 @@ class Repository @Inject constructor(
 
     fun getComment(id: String) = Pager(
         config = PagingConfig(
-            pageSize = 10
+            pageSize = 20
         ),
         pagingSourceFactory = {
             CommentPagingSource(episodeId = id, api = api)
+        }
+    ).flow
+
+    fun getImages(episodeId: String) = Pager(
+        config = PagingConfig(
+            pageSize = 20
+        ),
+        pagingSourceFactory = {
+            ImagePagingSource(episodeId = episodeId, api = api)
         }
     ).flow
 
@@ -52,7 +61,7 @@ class Repository @Inject constructor(
 
     fun getRecomment(id: String) = Pager(
         config = PagingConfig(
-            pageSize = 10
+            pageSize = 20
         ),
         pagingSourceFactory = {
             RecommentPagingSource(episodeId = id, api = api)

@@ -5,6 +5,7 @@ import com.example.watoon.data.CommentRequest
 import com.example.watoon.data.EpisodeListRequest
 import com.example.watoon.data.CommentResponse
 import com.example.watoon.data.EpisodeContent
+import com.example.watoon.data.ImageResponse
 import com.example.watoon.data.Like
 import com.example.watoon.data.LikeRequest
 import com.example.watoon.data.LoginRequest
@@ -198,4 +199,11 @@ interface MyRestAPI {
         @Path(value = "id") id:String,
         @Body data : Rating
     ):RatingRequest
+
+    @GET("api/episode/{id}/images")
+    suspend fun getImages(
+        @Header("Cookie") token:String,
+        @Path(value = "id") id:String,
+        @Query(value = "cursor") cursor : String?
+    ):ImageResponse
 }

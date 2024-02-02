@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.watoon.data.CommentContent
 import com.example.watoon.data.EpisodeContent
+import com.example.watoon.data.Image
 import com.example.watoon.data.Like
 import com.example.watoon.data.Rating
 import com.example.watoon.data.WebtoonDetailRequest
@@ -23,6 +24,9 @@ class EpisodeViewModel @Inject constructor(
 ) : ViewModel(){
     val episodeInfo: MutableStateFlow<EpisodeContent> = MutableStateFlow(EpisodeContent())
 
+    private val _images: MutableStateFlow<PagingData<Image>> = MutableStateFlow(value = PagingData.empty())
+    val images: MutableStateFlow<PagingData<Image>> = _images
+
     private val _commentList: MutableStateFlow<PagingData<CommentContent>> = MutableStateFlow(value = PagingData.empty())
     val commentList: MutableStateFlow<PagingData<CommentContent>> = _commentList
 
@@ -33,6 +37,18 @@ class EpisodeViewModel @Inject constructor(
     var commentId = 0
     var comment : CommentContent? = null
 
+
+    suspend fun getImages(){
+        repository.getImages(episodeId).cachedIn(viewModelScope).collect{
+            _images.value = it
+        }
+    }
+
+    suspend fun getComment(){
+        repository.getComment(episodeId).cachedIn(viewModelScope).collect{
+            _commentList.value = it
+        }
+    }
     suspend fun putEpisodeRate(rate:Int){
         api.putEpisodeRate(getToken(),episodeId, Rating(rate))
         getEpisodeContent(episodeId)
@@ -57,11 +73,7 @@ class EpisodeViewModel @Inject constructor(
         episodeInfo.value = api.getEpisodeInfo(getToken(), episodeIdFirst)
         episodeId = episodeInfo.value.id.toString()
     }
-    suspend fun getComment(){
-        repository.getComment(episodeId).cachedIn(viewModelScope).collect{
-            _commentList.value = it
-        }
-    }
+
 
     suspend fun deleteComment(commentId : String){
         repository.deleteComment(commentId)

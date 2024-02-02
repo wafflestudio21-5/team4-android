@@ -54,6 +54,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.example.watoon.NavigationDestination
@@ -89,10 +90,13 @@ fun EpisodePage(
 
     var giveRating by remember { mutableIntStateOf(0) }
 
+    val images = viewModel.images.collectAsLazyPagingItems()
+
     LaunchedEffect(true){
         try {
             viewModel.getEpisodeContent(episodeId.toString())
             giveRating = viewModel.getEpisodeRate()
+            viewModel.getImages()
         }catch (e:HttpException){
             makeError(context, e)
         }
@@ -155,6 +159,7 @@ fun EpisodePage(
                                             scope.launch {
                                                 try {
                                                     viewModel.getEpisodeContent(prevId)
+                                                    viewModel.getImages()
                                                 } catch (e: HttpException) {
                                                     makeError(context, e)
                                                 }
@@ -174,6 +179,7 @@ fun EpisodePage(
                                             scope.launch {
                                                 try {
                                                     viewModel.getEpisodeContent(nextId)
+                                                    viewModel.getImages()
                                                 } catch (e: HttpException) {
                                                     makeError(context, e)
                                                 }
@@ -197,9 +203,9 @@ fun EpisodePage(
                 ),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ){
-            items(episodeContent.images){
+            items(images.itemCount){index ->
                 AsyncImage(
-                    model = it.image,
+                    model = images[index]!!.image,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
