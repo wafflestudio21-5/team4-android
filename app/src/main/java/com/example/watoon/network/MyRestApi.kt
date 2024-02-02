@@ -60,6 +60,7 @@ interface MyRestAPI {
     @POST("/api/webtoonList")
     suspend fun uploadWebtoon(
         @Header("Cookie") token: String,
+        //@Part("body") body: RequestBody,
         @Part("title") title: RequestBody,
         @Part("description") description: RequestBody,
         @Part("uploadDays") uploadDays: RequestBody,

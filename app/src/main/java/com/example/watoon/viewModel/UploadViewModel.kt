@@ -27,6 +27,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -44,10 +46,14 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
 
     suspend fun uploadWebtoon(context: Context, title : String, description : String, uploadDays : List<String>, tag1 : String, tag2 : String, selectedImageUri: Uri?){
         val uploadDaysTrimmed = uploadDays.drop(1)
+        //val uploadDaysList = uploadDaysTrimmed.map { UploadDays(it) }
 
         var tags : List<String> = mutableListOf()
         if(tag1 != "") tags = tags.plus(tag1)
         if(tag2 != "") tags = tags.plus(tag2)
+
+        //val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags)
+        //val jsonObject = JSONObject(uploadWebtoonRequest)
 
         val titleJson = title.toRequestBody("application/json".toMediaTypeOrNull())
         val descriptionJson = description.toRequestBody("applicaton/json".toMediaTypeOrNull())
@@ -64,7 +70,7 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
             val requestFile = newFile.asRequestBody("image/*".toMediaTypeOrNull())
             imagePart = MultipartBody.Part.createFormData("titleImage", newFile.name, requestFile)
         }
-        //val uploadWebtoonRequest = UploadWebtoonRequest(title, description, uploadDaysList, tags, titleImage.toString())
+
         api.uploadWebtoon(getToken(), titleJson, descriptionJson, uploadDaysJson, tagsJson, imagePart)
     }
 
@@ -90,20 +96,20 @@ class UploadViewModel @Inject constructor(private var api : MyRestAPI) : ViewMod
 }
 
 fun createListRequestBody(stringList: List<String>, keyword: String): RequestBody {
-    /*var str = "["
-    for(word in stringList){
-        str += "{\"" + keyword + "\": \"" + word + "\"}, "
-    }
-    if(str.length > 1) str = str.substring(0, str.length-2)
-    str += "]"
-    return str.toRequestBody("application/json".toMediaTypeOrNull())*/
     if (stringList.isEmpty()) {
         return "[]".toRequestBody("application/json".toMediaTypeOrNull())
     }
 
-    val jsonArray = stringList.map { mapOf(keyword to it) }
+    val array = JSONArray()
+    for(word in stringList){
+        array.put(JSONObject().put(keyword, word))
+    }
+    val str = array.toString()
+    return str.toRequestBody("application/json".toMediaTypeOrNull())
+
+    /*val jsonArray = stringList.map { mapOf(keyword to it) }
     val jsonString = Gson().toJson(jsonArray)
-    return jsonString.toRequestBody("application/json".toMediaTypeOrNull())
+    return jsonString.toRequestBody("application/json".toMediaTypeOrNull())*/
 }
 
 object FileUtil {

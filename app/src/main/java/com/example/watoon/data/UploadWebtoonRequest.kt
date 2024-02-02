@@ -7,7 +7,7 @@ data class UploadWebtoonRequest(
     @Json(name = "description") val description : String,
     @Json(name = "uploadDays") val uploadDays : List<UploadDays>,
     @Json(name = "tags") val tags : List<Tag>,
-    @Json(name = "titleImage") val titleImage : String
+    //@Json(name = "titleImage") val titleImage : String
 ){
 }
 

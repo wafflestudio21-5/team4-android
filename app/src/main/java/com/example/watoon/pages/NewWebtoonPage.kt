@@ -178,6 +178,10 @@ fun NewWebtoonPage (viewModel:UploadViewModel, onEnter: (String) -> Unit) {
             onFileSelected = { uri -> selectedImageUri = uri }
         )
 
+        if (selectedImageUri != null) {
+            MyText("Selected File: ${getFileName(selectedImageUri!!)}")
+        }
+
         MyButton(text = "추가") {
             isLoading = true
             scope.launch {
