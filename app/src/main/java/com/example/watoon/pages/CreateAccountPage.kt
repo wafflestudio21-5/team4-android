@@ -76,7 +76,7 @@ fun CreateAccountPage(onEnter: (String) -> Unit){
             value = nickname,
             onValueChange = { nickname = it },
             label = "",
-            visible = false
+            visible = true
         )
 
         MyButton(text = "회원가입"){

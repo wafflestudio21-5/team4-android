@@ -23,8 +23,11 @@ class CommentPagingSource(
             val previousIndex = response.previous.toString().indexOf("cursor=")
             val nextIndex = response.next.toString().indexOf("cursor=")
 
-            val previous = if(response.previous == null) null else response.previous.toString().substring(previousIndex + "cursor=".length)
-            val next = if(response.next == null) null else response.next.toString().substring(nextIndex+"cursor=".length)
+            val previous = if (response.previous == null) null else
+                java.net.URLDecoder.decode(response.previous.toString().substring(previousIndex + "cursor=".length), "UTF-8")
+
+            val next = if (response.next == null) null else
+                java.net.URLDecoder.decode(response.next.toString().substring(nextIndex + "cursor=".length), "UTF-8")
 
             LoadResult.Page(
                 data = response.results,

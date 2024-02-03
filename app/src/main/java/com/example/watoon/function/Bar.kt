@@ -100,9 +100,20 @@ fun MainBasicTopBar(onEnter: (String) -> Unit){
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                MiniButton(text = "Upload"){
-                    onEnter(NavigationDestination.WebtoonUpload)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier. padding(8.dp)
+                ){
+                    MiniButton(text = "업로드"){
+                        onEnter(NavigationDestination.WebtoonUpload)
+                    }
+
+                    MiniButton(text = "닉네임") {
+                        onEnter(NavigationDestination.NicknameChange)
+                    }
                 }
+
+
                 Image(
                     painter = painterResource(R.drawable.baseline_search_24),
                     contentDescription = "",

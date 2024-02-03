@@ -14,4 +14,5 @@ object NavigationDestination {
     const val Comment = "Comment"
     const val Recomment = "Recomment"
     const val Episode = "Episode"
+    const val NicknameChange = "NicknameChange"
 }

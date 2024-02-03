@@ -3,8 +3,10 @@ package com.example.watoon.viewModel
 import androidx.lifecycle.ViewModel
 import com.example.watoon.MyApp
 import com.example.watoon.data.LoginRequest
+import com.example.watoon.data.NickName
 import com.example.watoon.data.PasswordResetRequest
 import com.example.watoon.data.RegisterRequest
+import com.example.watoon.function.getToken
 import com.example.watoon.function.setToken
 import com.example.watoon.network.MyRestAPI
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +14,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(private var api : MyRestAPI) : ViewModel()  {
+
+    suspend fun changeNickname(nickname:String){
+        api.changeNickname(getToken(), NickName(nickname))
+    }
 
     suspend fun createAccount(email:String, pw1:String, pw2:String, nickname:String) {
         val registerRequest = RegisterRequest(email, pw1, pw2, nickname)

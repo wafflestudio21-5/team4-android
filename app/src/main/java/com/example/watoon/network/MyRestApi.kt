@@ -10,6 +10,7 @@ import com.example.watoon.data.Like
 import com.example.watoon.data.LikeRequest
 import com.example.watoon.data.LoginRequest
 import com.example.watoon.data.LoginResponse
+import com.example.watoon.data.NickName
 import com.example.watoon.data.PasswordResetRequest
 import com.example.watoon.data.Rating
 import com.example.watoon.data.RatingRequest
@@ -206,4 +207,10 @@ interface MyRestAPI {
         @Path(value = "id") id:String,
         @Query(value = "cursor") cursor : String?
     ):ImageResponse
+
+    @POST("/accounts/nickname")
+    suspend fun changeNickname(
+        @Header("Cookie") token:String,
+        @Body data : NickName
+    )
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -71,144 +72,163 @@ fun NewWebtoonPage (viewModel:UploadViewModel, onEnter: (String) -> Unit) {
         selectedImageUri = uri
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        BasicTopBar(
-            text = "신규 웹툰 등록",
-            destination = NavigationDestination.WebtoonUpload,
-            onEnter = onEnter
-        )
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ){
+        item {
+            BasicTopBar(
+                text = "신규 웹툰 등록",
+                destination = NavigationDestination.WebtoonUpload,
+                onEnter = onEnter
+            )
+        }
 
-        MyText(text = "웹툰 제목")
-        MyTextField(
-            value = title,
-            onValueChange = { title = it },
-            label = "제목을 입력하세요",
-            visible = true
-        )
+        item {
+            MyText(text = "웹툰 제목")
+            MyTextField(
+                value = title,
+                onValueChange = { title = it },
+                label = "제목을 입력하세요",
+                visible = true
+            )
+        }
 
-        MyText(text = "설명")
-        MyTextField(
-            value = description,
-            onValueChange = { description = it },
-            label = "설명을 입력하세요",
-            visible = true
-        )
+        item{
+            MyText(text = "설명")
+            MyTextField(
+                value = description,
+                onValueChange = { description = it },
+                label = "설명을 입력하세요",
+                visible = true
+            )
+        }
 
-        MyText(text = "업로드 요일 설정")
-        Row(
-            modifier = Modifier.padding(11.dp)
-        ){
-            daysOfWeek.forEach { day ->
-                Text(
-                    text = " " + translate(day) + " ",
-                    modifier = Modifier
-                        .background(
-                            if (uploadDays.contains(day)) Watoon
-                            else Color.LightGray,
-                        )
-                        .clickable {
-                            uploadDays = if (uploadDays.contains(day)) {
-                                uploadDays - day
-                            } else {
-                                uploadDays + day
+        item{
+            MyText(text = "업로드 요일 설정")
+            Row(
+                modifier = Modifier.padding(11.dp)
+            ){
+                daysOfWeek.forEach { day ->
+                    Text(
+                        text = " " + translate(day) + " ",
+                        modifier = Modifier
+                            .background(
+                                if (uploadDays.contains(day)) Watoon
+                                else Color.LightGray,
+                            )
+                            .clickable {
+                                uploadDays = if (uploadDays.contains(day)) {
+                                    uploadDays - day
+                                } else {
+                                    uploadDays + day
+                                }
                             }
-                        }
-                        .border(
-                            width = 2.dp,
-                            color = if (uploadDays.contains(day)) Watoon else Color.LightGray,
-                            shape = RoundedCornerShape(10.dp)
-                        ),
-                    fontSize = 25.sp
-                )
-                Text("  ")
-            }
-        }
-
-        MyText(text = "해시태그 설정 (최대 2개)")
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "#",
-                fontSize = 20.sp
-            )
-            TextField(
-                value = tag1,
-                onValueChange = { tag1 = it },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .shadow(2.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.White,
-                    placeholderColor = Color.LightGray
-                )
-
-            )
-            Text(
-                text = "#",
-                fontSize = 20.sp
-            )
-            TextField(
-                value = tag2,
-                onValueChange = { tag2 = it },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .shadow(2.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.White,
-                    placeholderColor = Color.LightGray
-                )
-            )
-        }
-
-        MyText(text = "썸네일 추가")
-        UploadButton(
-            chooseFile = chooseFile,
-            onFileSelected = { uri -> selectedImageUri = uri }
-        )
-
-        if (selectedImageUri != null) {
-            MyText("Selected File: ${getFileName(selectedImageUri!!)}")
-        }
-
-        MyButton(text = "추가") {
-            isLoading = true
-            scope.launch {
-                try {
-                    viewModel.uploadWebtoon(context, title, description, uploadDays, tag1, tag2, selectedImageUri)
-                    Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
-                    title = ""
-                    description = ""
-                    uploadDays = listOf()
-                    tag1 = ""
-                    tag2 = ""
-                    selectedImageUri = null
-                    onEnter(NavigationDestination.WebtoonUpload)
-                } catch (e: HttpException) {
-                    makeError(context, e)
-                } finally {
-                    isLoading = false
+                            .border(
+                                width = 2.dp,
+                                color = if (uploadDays.contains(day)) Watoon else Color.LightGray,
+                                shape = RoundedCornerShape(10.dp)
+                            ),
+                        fontSize = 25.sp
+                    )
+                    Text("  ")
                 }
             }
         }
 
-        if (isLoading) {
-            Text(
-                text = "로딩 중입니다...",
+        item {
+            MyText(text = "해시태그 설정 (최대 2개)")
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Center
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "#",
+                    fontSize = 20.sp
+                )
+                TextField(
+                    value = tag1,
+                    onValueChange = { tag1 = it },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                        .shadow(2.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color.White,
+                        placeholderColor = Color.LightGray
+                    )
+
+                )
+                Text(
+                    text = "#",
+                    fontSize = 20.sp
+                )
+                TextField(
+                    value = tag2,
+                    onValueChange = { tag2 = it },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                        .shadow(2.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color.White,
+                        placeholderColor = Color.LightGray
+                    )
+                )
+            }
+
+        }
+
+        item{
+            MyText(text = "썸네일 추가")
+            UploadButton(
+                chooseFile = chooseFile,
+                onFileSelected = { uri -> selectedImageUri = uri }
             )
         }
+
+        item{
+            if (selectedImageUri != null) {
+                MyText("Selected File: ${getFileName(selectedImageUri!!)}")
+            }
+        }
+
+        item{
+            MyButton(text = "추가") {
+                isLoading = true
+                scope.launch {
+                    try {
+                        viewModel.uploadWebtoon(context, title, description, uploadDays, tag1, tag2, selectedImageUri)
+                        Toast.makeText(context, "업로드 성공", Toast.LENGTH_LONG).show()
+                        title = ""
+                        description = ""
+                        uploadDays = listOf()
+                        tag1 = ""
+                        tag2 = ""
+                        selectedImageUri = null
+                        onEnter(NavigationDestination.WebtoonUpload)
+                    } catch (e: HttpException) {
+                        makeError(context, e)
+                    } finally {
+                        isLoading = false
+                    }
+                }
+            }
+        }
+
+        item{
+            if (isLoading) {
+                Text(
+                    text = "로딩 중입니다...",
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
     }
 }
