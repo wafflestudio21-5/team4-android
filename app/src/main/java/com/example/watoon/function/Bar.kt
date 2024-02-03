@@ -108,9 +108,9 @@ fun MainBasicTopBar(onEnter: (String) -> Unit){
                         onEnter(NavigationDestination.WebtoonUpload)
                     }
 
-                    MiniButton(text = "닉네임") {
+                    /*MiniButton(text = "닉네임") {
                         onEnter(NavigationDestination.NicknameChange)
-                    }
+                    }*/
                 }
 
 

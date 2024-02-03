@@ -39,6 +39,11 @@ class LoginViewModel @Inject constructor(private var api : MyRestAPI) : ViewMode
         api.passwordReset(passwordRequest)
     }
 
+    suspend fun googleLogin(){
+        val socialLogin = api.googleLogin()
+        setToken(socialLogin.accessToken, socialLogin.idToken)
+    }
+
     /*
     val loginRequest = LoginRequest(email, pw)
 

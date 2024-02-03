@@ -16,6 +16,7 @@ import com.example.watoon.data.Rating
 import com.example.watoon.data.RatingRequest
 import com.example.watoon.data.RecommentResponse
 import com.example.watoon.data.RegisterRequest
+import com.example.watoon.data.SocialLogin
 import com.example.watoon.data.UploadEpisodeRequest
 import com.example.watoon.data.UploadWebtoonRequest
 import com.example.watoon.data.UploadWebtoonResponse
@@ -49,6 +50,9 @@ interface MyRestAPI {
 
     @POST("/accounts/password/reset/")
     suspend fun passwordReset(@Body data: PasswordResetRequest)
+
+    @POST("/accounts/google/login/finish/")
+    suspend fun googleLogin() : SocialLogin
 
     @GET("/api/profile/{id}/uploadWebtoonList")
     suspend fun loadMyWebtoon(

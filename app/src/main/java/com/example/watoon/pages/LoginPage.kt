@@ -66,12 +66,16 @@ fun LoginPage (
         Log.d("GoogleSignIn", "Callback invoked")
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
 
-        try {
-            //val account = task.getResult(ApiException::class.java)
-            Log.d("GoogleSignIn", "passed")
-            onEnter(NavigationDestination.Main)
-        } catch (e: ApiException) {
-            e.printStackTrace()
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                viewModel.googleLogin()
+                Toast.makeText(context, "로그인 성공", Toast.LENGTH_LONG).show()
+                onEnter(NavigationDestination.Main)
+            } catch(e : HttpException){
+                makeError(context, e)
+            } finally {
+                isLoading = false
+            }
         }
     }
 
@@ -133,11 +137,18 @@ fun LoginPage (
             )
         }
 
-        MiniButton(text = "구글 로그인") {
-            googleSignInClient.signOut()
-            val signInIntent = googleSignInClient.signInIntent
-            Log.d("signinIntent", "passed")
-            googleAuthLauncher.launch(signInIntent)
+        Row(horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(1.dp)){
+            MiniButton(text = "구글 로그인") {
+                /*googleSignInClient.signOut()
+                val signInIntent = googleSignInClient.signInIntent
+                Log.d("signinIntent", "passed")
+                googleAuthLauncher.launch(signInIntent)*/
+                Toast.makeText(context, "bug fix...", Toast.LENGTH_LONG).show()
+            }
+            MiniButton(text = "카카오 로그인") {
+                Toast.makeText(context, "bug fix...", Toast.LENGTH_LONG).show()
+            }
         }
 
         if (isLoading) {
